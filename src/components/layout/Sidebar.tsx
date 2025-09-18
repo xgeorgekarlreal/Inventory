@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useAuth } from '../../contexts/AuthContext'
 import { 
   LayoutDashboard, 
   User, 
@@ -16,7 +17,7 @@ interface SidebarProps {
   onClose: () => void
 }
 
-const navigation = [
+const adminNavigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Profile', href: '/profile', icon: User },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
@@ -26,8 +27,20 @@ const navigation = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
+const staffNavigation = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Profile', href: '/profile', icon: User },
+  { name: 'Documents', href: '/documents', icon: FileText },
+  { name: 'Messages', href: '/messages', icon: Mail },
+  { name: 'Calendar', href: '/calendar', icon: Calendar },
+]
+
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation()
+  const { persona } = useAuth()
+
+  // Determine navigation based on persona
+  const navigation = persona?.type === 'admin' ? adminNavigation : staffNavigation
 
   return (
     <>
@@ -48,7 +61,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold text-gray-900">Your App</h1>
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Your App</h1>
+              {persona && (
+                <p className="text-xs text-gray-500 capitalize">
+                  {persona.type} Portal
+                </p>
+              )}
+            </div>
             <button
               onClick={onClose}
               className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 lg:hidden transition-colors"

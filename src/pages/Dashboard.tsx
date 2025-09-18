@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { BarChart3, Users, TrendingUp, DollarSign } from 'lucide-react'
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth()
+  const { user, persona } = useAuth()
 
   const stats = [
     { name: 'Total Users', value: '1,234', icon: Users, change: '+12%' },
@@ -20,10 +20,18 @@ const Dashboard: React.FC = () => {
           <div className="flex items-center">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Welcome back, {user?.email?.split('@')[0]}!
+                Welcome back, {user?.email?.split('@')[0]}
+                {persona && (
+                  <span className="text-lg font-normal text-gray-600 ml-2">
+                    ({persona.type === 'admin' ? 'Administrator' : 'Staff Member'})
+                  </span>
+                )}
               </h1>
               <p className="mt-1 text-sm text-gray-600">
-                Here's what's happening with your account today.
+                {persona?.type === 'admin' 
+                  ? "Here's your administrative dashboard overview."
+                  : "Here's your staff dashboard overview."
+                }
               </p>
             </div>
           </div>

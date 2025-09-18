@@ -1,9 +1,9 @@
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext'
-import { User, Mail, Calendar, Shield } from 'lucide-react'
+import { User, Mail, Calendar, Shield, Users } from 'lucide-react'
 
 const Profile: React.FC = () => {
-  const { user } = useAuth()
+  const { user, persona } = useAuth()
 
   return (
     <div className="space-y-6">
@@ -27,6 +27,22 @@ const Profile: React.FC = () => {
                 {user?.email?.split('@')[0] || 'User'}
               </h2>
               <p className="text-gray-600">{user?.email}</p>
+              {persona && (
+                <div className="mt-2">
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    persona.type === 'admin' 
+                      ? 'bg-blue-100 text-blue-800' 
+                      : 'bg-green-100 text-green-800'
+                  }`}>
+                    {persona.type === 'admin' ? 'Administrator' : 'Staff Member'}
+                  </span>
+                  {persona.loginName && (
+                    <span className="ml-2 text-sm text-gray-500">
+                      Login: {persona.loginName}
+                    </span>
+                  )}
+                </div>
+              )}
               <div className="mt-4 flex items-center space-x-6">
                 <div className="flex items-center text-sm text-gray-500">
                   <Calendar className="h-4 w-4 mr-1" />
@@ -67,6 +83,24 @@ const Profile: React.FC = () => {
                 <span className="text-sm text-gray-900 font-mono">{user?.id}</span>
               </div>
             </div>
+            {persona && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Current Role
+                </label>
+                <div className="flex items-center space-x-3">
+                  {persona.type === 'admin' ? (
+                    <Shield className="h-5 w-5 text-blue-600" />
+                  ) : (
+                    <User className="h-5 w-5 text-green-600" />
+                  )}
+                  <span className="text-sm text-gray-900 capitalize">
+                    {persona.type} Access
+                    {persona.loginName && ` (${persona.loginName})`}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
