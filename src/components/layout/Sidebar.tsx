@@ -9,7 +9,8 @@ import {
   BarChart3, 
   Mail, 
   Calendar,
-  X
+  X,
+  Shield
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -24,6 +25,7 @@ const adminNavigation = [
   { name: 'Documents', href: '/documents', icon: FileText },
   { name: 'Messages', href: '/messages', icon: Mail },
   { name: 'Calendar', href: '/calendar', icon: Calendar },
+  { name: 'Persona Management', href: '/persona-management', icon: Shield },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 

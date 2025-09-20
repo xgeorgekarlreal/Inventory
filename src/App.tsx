@@ -9,6 +9,7 @@ import SignupForm from './components/auth/SignupForm'
 import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import PlaceholderPage from './pages/PlaceholderPage'
+import PersonaManagement from './pages/PersonaManagement'
 import { 
   BarChart3, 
   FileText, 
@@ -112,6 +113,16 @@ function App() {
                     description="Configure your application settings and preferences."
                     icon={Settings}
                   />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/persona-management" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <PersonaManagement />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
