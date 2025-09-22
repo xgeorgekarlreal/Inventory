@@ -46,10 +46,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Backdrop - shown on all screen sizes when sidebar is open */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-40 bg-gray-600 bg-opacity-75 backdrop-blur-sm"
           onClick={onClose}
         />
       )}
@@ -57,7 +57,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       {/* Sidebar */}
       <div className={`
         fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out
-        lg:relative lg:translate-x-0 lg:shadow-none lg:border-r lg:border-gray-200
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
@@ -73,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 lg:hidden transition-colors"
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
               aria-label="Close sidebar"
             >
               <X className="h-5 w-5" />
@@ -90,12 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  onClick={() => {
-                    // Close sidebar on mobile after navigation
-                    if (window.innerWidth < 1024) {
-                      onClose()
-                    }
-                  }}
+                  onClick={onClose}
                   className={`
                     flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
                     ${isActive

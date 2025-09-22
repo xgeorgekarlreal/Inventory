@@ -24,12 +24,12 @@ const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
         <div className="flex items-center">
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 lg:hidden transition-colors"
+            className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors"
             aria-label="Open sidebar"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <h2 className="ml-2 text-lg font-semibold text-gray-900 lg:hidden">
+          <h2 className="ml-2 text-lg font-semibold text-gray-900">
             Your App
           </h2>
         </div>
