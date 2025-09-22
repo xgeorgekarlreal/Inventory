@@ -9,7 +9,6 @@ const PersonaSelection: React.FC = () => {
   const [password, setPassword] = useState('')
   const [loginName, setLoginName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
 
   const handlePersonaSelect = (personaType: PersonaType) => {
     setSelectedPersona(personaType)
