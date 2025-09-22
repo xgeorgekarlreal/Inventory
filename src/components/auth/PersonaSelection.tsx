@@ -10,9 +10,11 @@ const PersonaSelection: React.FC = () => {
   const [loginName, setLoginName] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
+  const [error, setError] = useState('')
 
   const handlePersonaSelect = (personaType: PersonaType) => {
     setSelectedPersona(personaType)
+    setError('')
     setError('')
     setPassword('')
     setLoginName('')
@@ -21,12 +23,14 @@ const PersonaSelection: React.FC = () => {
   const handleBack = () => {
     setSelectedPersona(null)
     setError('')
+    setError('')
     setPassword('')
     setLoginName('')
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError('')
     setError('')
 
     if (!selectedPersona) return
@@ -41,7 +45,16 @@ const PersonaSelection: React.FC = () => {
           return
         }
         result = await validateStaffPersona(loginName, password)
+          setError('Login name is required for staff access')
+          return
+        }
+        result = await validateStaffPersona(loginName, password)
       }
+
+      if (!result.success) {
+        setError(result.message)
+      }
+    } catch (error) {
 
       if (!result.success) {
         setError(result.message)
