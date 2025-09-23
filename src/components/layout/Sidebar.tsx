@@ -1,16 +1,23 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { 
-  LayoutDashboard, 
-  User, 
-  Settings, 
-  FileText, 
-  BarChart3, 
-  Mail, 
-  Calendar,
+  Home,
+  Box,
+  Briefcase,
+  BarChart3,
+  ChevronDown,
+  ChevronRight,
   X,
-  Shield
+  Shield,
+  User,
+  Settings,
+  Package,
+  Warehouse,
+  ArrowUpDown,
+  MapPin,
+  Truck,
+  Tag
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -18,31 +25,133 @@ interface SidebarProps {
   onClose: () => void
 }
 
-const adminNavigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-  { name: 'Profile', href: '/profile', icon: User },
-  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
-  { name: 'Documents', href: '/documents', icon: FileText },
-  { name: 'Messages', href: '/messages', icon: Mail },
-  { name: 'Calendar', href: '/calendar', icon: Calendar },
-  { name: 'Persona Management', href: '/persona-management', icon: Shield },
-  { name: 'Settings', href: '/settings', icon: Settings },
+interface NavigationItem {
+  name: string
+  href?: string
+  icon: React.ComponentType<any>
+  children?: NavigationItem[]
+  adminOnly?: boolean
+}
+
+const navigation: NavigationItem[] = [
+  { 
+    name: 'Dashboard', 
+    href: '/dashboard', 
+    icon: Home 
+  },
+  {
+    name: 'Inventory',
+    icon: Box,
+    children: [
+      { name: 'Products', href: '/inventory/products', icon: Package },
+      { name: 'Stock on Hand', href: '/inventory/stock', icon: Warehouse },
+      { name: 'Transactions', href: '/inventory/transactions', icon: ArrowUpDown },
+    ]
+  },
+  {
+    name: 'Management',
+    icon: Briefcase,
+    children: [
+      { name: 'Locations', href: '/management/locations', icon: MapPin },
+      { name: 'Suppliers', href: '/management/suppliers', icon: Truck },
+      { name: 'Categories', href: '/management/categories', icon: Tag },
+    ]
+  },
+  {
+    name: 'Reports',
+    href: '/reports',
+    icon: BarChart3
+  }
 ]
 
-const staffNavigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+const adminOnlyNavigation: NavigationItem[] = [
   { name: 'Profile', href: '/profile', icon: User },
-  { name: 'Documents', href: '/documents', icon: FileText },
-  { name: 'Messages', href: '/messages', icon: Mail },
-  { name: 'Calendar', href: '/calendar', icon: Calendar },
+  { name: 'Persona Management', href: '/persona-management', icon: Shield },
+  { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const location = useLocation()
   const { persona } = useAuth()
+  const [expandedSections, setExpandedSections] = useState<string[]>(['Inventory', 'Management'])
 
-  // Determine navigation based on persona
-  const navigation = persona?.type === 'admin' ? adminNavigation : staffNavigation
+  const toggleSection = (sectionName: string) => {
+    setExpandedSections(prev => 
+      prev.includes(sectionName)
+        ? prev.filter(name => name !== sectionName)
+        : [...prev, sectionName]
+    )
+  }
+
+  const isActive = (href: string) => location.pathname === href
+  const isParentActive = (children: NavigationItem[]) => 
+    children.some(child => child.href && isActive(child.href))
+
+  const renderNavigationItem = (item: NavigationItem, level: number = 0) => {
+    const Icon = item.icon
+    const hasChildren = item.children && item.children.length > 0
+    const isExpanded = expandedSections.includes(item.name)
+    const isItemActive = item.href ? isActive(item.href) : false
+    const isParentItemActive = hasChildren ? isParentActive(item.children!) : false
+
+    if (hasChildren) {
+      return (
+        <div key={item.name}>
+          <button
+            onClick={() => toggleSection(item.name)}
+            className={`
+              w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+              ${isParentItemActive
+                ? 'bg-blue-50 text-blue-700'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+              }
+            `}
+          >
+            <div className="flex items-center">
+              <Icon className={`
+                h-5 w-5 mr-3 flex-shrink-0
+                ${isParentItemActive ? 'text-blue-700' : 'text-gray-400'}
+              `} />
+              {item.name}
+            </div>
+            {isExpanded ? (
+              <ChevronDown className="h-4 w-4 text-gray-400" />
+            ) : (
+              <ChevronRight className="h-4 w-4 text-gray-400" />
+            )}
+          </button>
+          
+          {isExpanded && (
+            <div className="ml-6 mt-1 space-y-1">
+              {item.children!.map(child => renderNavigationItem(child, level + 1))}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    return (
+      <Link
+        key={item.name}
+        to={item.href!}
+        onClick={onClose}
+        className={`
+          flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
+          ${level > 0 ? 'ml-2' : ''}
+          ${isItemActive
+            ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
+            : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+          }
+        `}
+      >
+        <Icon className={`
+          h-5 w-5 mr-3 flex-shrink-0
+          ${isItemActive ? 'text-blue-700' : 'text-gray-400'}
+        `} />
+        {item.name}
+      </Link>
+    )
+  }
 
   return (
     <>
@@ -63,7 +172,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Your App</h1>
+              <h1 className="text-xl font-bold text-gray-900">Inventory Pro</h1>
               {persona && (
                 <p className="text-xs text-gray-500 capitalize">
                   {persona.type} Portal
@@ -80,32 +189,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-            {navigation.map((item) => {
-              const isActive = location.pathname === item.href
-              const Icon = item.icon
-              
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  onClick={onClose}
-                  className={`
-                    flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-all duration-200
-                    ${isActive
-                      ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
-                      : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
-                    }
-                  `}
-                >
-                  <Icon className={`
-                    h-5 w-5 mr-3 flex-shrink-0
-                    ${isActive ? 'text-blue-700' : 'text-gray-400 group-hover:text-gray-500'}
-                  `} />
-                  {item.name}
-                </Link>
-              )
-            })}
+          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+            {/* Main Navigation */}
+            <div className="space-y-1">
+              {navigation.map(item => renderNavigationItem(item))}
+            </div>
+
+            {/* Divider */}
+            <div className="border-t border-gray-200 my-6"></div>
+
+            {/* Admin/User Navigation */}
+            <div className="space-y-1">
+              <div className="px-3 py-2">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Account
+                </p>
+              </div>
+              {adminOnlyNavigation.map(item => {
+                // Show persona management only for admins
+                if (item.name === 'Persona Management' && persona?.type !== 'admin') {
+                  return null
+                }
+                return renderNavigationItem(item)
+              })}
+            </div>
           </nav>
         </div>
       </div>

@@ -48,27 +48,14 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/analytics" element={
+          {/* Inventory Routes */}
+          <Route path="/inventory/products" element={
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
                   <PlaceholderPage 
-                    title="Analytics" 
-                    description="View detailed analytics and insights about your data."
-                    icon={BarChart3}
-                  />
-                </Layout>
-              </PersonaProtectedRoute>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/documents" element={
-            <ProtectedRoute>
-              <PersonaProtectedRoute>
-                <Layout>
-                  <PlaceholderPage 
-                    title="Documents" 
-                    description="Manage and organize your documents and files."
+                    title="Products" 
+                    description="Manage your product catalog and inventory items."
                     icon={FileText}
                   />
                 </Layout>
@@ -76,34 +63,93 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/messages" element={
+          <Route path="/inventory/stock" element={
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
                   <PlaceholderPage 
-                    title="Messages" 
-                    description="Send and receive messages with your team."
-                    icon={Mail}
+                    title="Stock on Hand" 
+                    description="View current stock levels and inventory quantities."
+                    icon={FileText}
                   />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
           } />
           
-          <Route path="/calendar" element={
+          <Route path="/inventory/transactions" element={
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
                   <PlaceholderPage 
-                    title="Calendar" 
-                    description="Schedule and manage your events and appointments."
-                    icon={Calendar}
+                    title="Transactions" 
+                    description="View and manage inventory transactions and movements."
+                    icon={FileText}
                   />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
           } />
           
+          {/* Management Routes */}
+          <Route path="/management/locations" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <PlaceholderPage 
+                    title="Locations" 
+                    description="Manage warehouse locations and storage areas."
+                    icon={FileText}
+                  />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/management/suppliers" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <PlaceholderPage 
+                    title="Suppliers" 
+                    description="Manage supplier information and relationships."
+                    icon={FileText}
+                  />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/management/categories" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <PlaceholderPage 
+                    title="Categories" 
+                    description="Organize products into categories and subcategories."
+                    icon={FileText}
+                  />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          {/* Reports Route */}
+          <Route path="/reports" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <PlaceholderPage 
+                    title="Reports" 
+                    description="Generate and view inventory reports and analytics."
+                    icon={BarChart3}
+                  />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          {/* Settings and Admin Routes */}
           <Route path="/settings" element={
             <ProtectedRoute>
               <PersonaProtectedRoute>
