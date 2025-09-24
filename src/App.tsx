@@ -10,6 +10,10 @@ import Dashboard from './pages/Dashboard'
 import Profile from './pages/Profile'
 import PlaceholderPage from './pages/PlaceholderPage'
 import PersonaManagement from './pages/PersonaManagement'
+import ProductsPage from './pages/inventory/ProductsPage'
+import ProductDetailPage from './pages/inventory/ProductDetailPage'
+import CreateProductPage from './pages/inventory/CreateProductPage'
+import EditProductPage from './pages/inventory/EditProductPage'
 import { 
   BarChart3, 
   FileText, 
@@ -53,11 +57,37 @@ function App() {
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <PlaceholderPage 
-                    title="Products" 
-                    description="Manage your product catalog and inventory items."
-                    icon={FileText}
-                  />
+                  <ProductsPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/products/create" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <CreateProductPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/products/:productId" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <ProductDetailPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/products/:productId/edit" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <EditProductPage />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
