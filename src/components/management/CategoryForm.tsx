@@ -1,4 +1,3 @@
-typescript
 import React, { useState, useEffect } from 'react'
 import { Category, CategoryFormData } from '../../types/inventory'
 import { Tag, FileText, AlertCircle } from 'lucide-react'
