@@ -226,7 +226,7 @@ function App() {
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
-          } />
+          } /> 
           
           {/* Placeholder Routes (if not yet implemented) */}
           <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><PlaceholderPage title="Stock on Hand" description="View current stock levels and inventory quantities." icon={FileText}/></Layout></PersonaProtectedRoute></ProtectedRoute>} />
