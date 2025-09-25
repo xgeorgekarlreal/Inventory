@@ -14,6 +14,8 @@ import ProductsPage from './pages/inventory/ProductsPage'
 import ProductDetailPage from './pages/inventory/ProductDetailPage'
 import CreateProductPage from './pages/inventory/CreateProductPage'
 import LocationsPage from './pages/management/LocationsPage'
+import CategoriesPage from './pages/management/CategoriesPage'
+
 import CreateLocationPage from './pages/management/CreateLocationPage'
 import EditLocationPage from './pages/management/EditLocationPage'
 import SuppliersPage from './pages/management/SuppliersPage'
