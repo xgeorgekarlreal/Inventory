@@ -223,7 +223,6 @@ function App() {
               <PersonaProtectedRoute>
                 <Layout>
                   <EditCategoryPage />
-                  />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
