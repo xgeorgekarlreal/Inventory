@@ -1,4 +1,4 @@
-```typescript
+typescript
 export interface Product {
   product_id: number
   sku: string
@@ -75,4 +75,3 @@ export interface LocationFormData {
   address: string | null
   is_active: boolean
 }
-```
