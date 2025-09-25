@@ -222,7 +222,7 @@ function App() {
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <EditCategoryPage />
+                  <EditCategoryPage /> 
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
