@@ -1,4 +1,3 @@
-typescript
 import React, { useState, useEffect } from 'react'
 import { Location, LocationFormData } from '../../types/inventory'
 import { MapPin, FileText, CheckSquare, AlertCircle } from 'lucide-react'
