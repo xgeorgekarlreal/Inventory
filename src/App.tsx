@@ -14,6 +14,10 @@ import ProductsPage from './pages/inventory/ProductsPage'
 import ProductDetailPage from './pages/inventory/ProductDetailPage'
 import CreateProductPage from './pages/inventory/CreateProductPage'
 import EditProductPage from './pages/inventory/EditProductPage'
+import ProductsPage from './pages/inventory/ProductsPage'
+import ProductDetailPage from './pages/inventory/ProductDetailPage'
+import CreateProductPage from './pages/inventory/CreateProductPage'
+import EditProductPage from './pages/inventory/EditProductPage'
 import { 
   BarChart3, 
   FileText, 
