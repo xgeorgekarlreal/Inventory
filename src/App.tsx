@@ -181,7 +181,6 @@ function App() {
               <PersonaProtectedRoute>
                 <Layout>
                   <EditSupplierPage />
-                  />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
