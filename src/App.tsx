@@ -14,6 +14,10 @@ import ProductsPage from './pages/inventory/ProductsPage'
 import ProductDetailPage from './pages/inventory/ProductDetailPage'
 import CreateProductPage from './pages/inventory/CreateProductPage'
 import EditProductPage from './pages/inventory/EditProductPage'
+import ProductsPage from './pages/inventory/ProductsPage'
+import ProductDetailPage from './pages/inventory/ProductDetailPage'
+import CreateProductPage from './pages/inventory/CreateProductPage'
+import EditProductPage from './pages/inventory/EditProductPage'
 import { 
   BarChart3, 
   FileText, 
@@ -58,6 +62,32 @@ function App() {
               <PersonaProtectedRoute>
                 <Layout>
                   <ProductsPage />
+          
+          <Route path="/inventory/products/create" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <CreateProductPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/products/:productId" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <ProductDetailPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/products/:productId/edit" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <EditProductPage />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
