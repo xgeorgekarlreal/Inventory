@@ -62,6 +62,10 @@ function App() {
               <PersonaProtectedRoute>
                 <Layout>
                   <ProductsPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
           
           <Route path="/inventory/products/create" element={
             <ProtectedRoute>
