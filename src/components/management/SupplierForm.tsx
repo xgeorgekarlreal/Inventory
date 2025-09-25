@@ -1,4 +1,4 @@
-```typescript
+typescript
 import React, { useState, useEffect } from 'react'
 import { Supplier, SupplierFormData } from '../../types/inventory'
 import { Truck, User, Phone, Mail, MapPin, AlertCircle } from 'lucide-react'
@@ -198,4 +198,3 @@ const SupplierForm: React.FC<SupplierFormProps> = ({
 }
 
 export default SupplierForm
-```
