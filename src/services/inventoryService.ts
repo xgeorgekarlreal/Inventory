@@ -1,4 +1,4 @@
-```typescript
+typescript
 import { supabase } from '../lib/supabase'
 import { Product, Category, Supplier, ProductFormData, Location, LocationFormData, CategoryFormData, SupplierFormData } from '../types/inventory'
 
@@ -674,4 +674,3 @@ export class InventoryService {
     }
   }
 }
-```
