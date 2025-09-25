@@ -52,9 +52,9 @@ const navigation: NavigationItem[] = [
     name: 'Management',
     icon: Briefcase,
     children: [
-      { name: 'Locations', href: '/management/locations', icon: MapPin },
-      { name: 'Suppliers', href: '/management/suppliers', icon: Truck },
-      { name: 'Categories', href: '/management/categories', icon: Tag },
+      { name: 'Locations', href: '/management/locations', icon: MapPin, adminOnly: true },
+      { name: 'Suppliers', href: '/management/suppliers', icon: Truck, adminOnly: true },
+      { name: 'Categories', href: '/management/categories', icon: Tag, adminOnly: true },
     ]
   },
   {
@@ -93,6 +93,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     const isExpanded = expandedSections.includes(item.name)
     const isItemActive = item.href ? isActive(item.href) : false
     const isParentItemActive = hasChildren ? isParentActive(item.children!) : false
+
+    // Admin-only check for sidebar items
+    if (item.adminOnly && persona?.type !== 'admin') {
+      return null
+    }
 
     if (hasChildren) {
       return (

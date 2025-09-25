@@ -1,5 +1,6 @@
+```typescript
 import { supabase } from '../lib/supabase'
-import { Product, Category, Supplier, ProductFormData } from '../types/inventory'
+import { Product, Category, Supplier, ProductFormData, Location, LocationFormData, CategoryFormData, SupplierFormData } from '../types/inventory'
 
 export interface ServiceResult<T = any> {
   success: boolean
@@ -218,7 +219,7 @@ export class InventoryService {
     }
   }
 
-  // Categories
+  // Categories CRUD operations
   static async getAllCategories(): Promise<ServiceResult<Category[]>> {
     try {
       const { data, error } = await supabase.rpc('get_all_categories')
@@ -245,7 +246,129 @@ export class InventoryService {
     }
   }
 
-  // Suppliers
+  static async getCategoryById(categoryId: number): Promise<ServiceResult<Category>> {
+    try {
+      const { data, error } = await supabase.rpc('get_category_by_id', {
+        p_category_id: categoryId
+      })
+
+      if (error) {
+        console.error('Error fetching category:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch category details'
+        }
+      }
+
+      if (!data || data.length === 0) {
+        return {
+          success: false,
+          message: 'Category not found'
+        }
+      }
+
+      return {
+        success: true,
+        data: data[0],
+        message: 'Category fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching category:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async createCategory(categoryData: CategoryFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('create_category', {
+        p_name: categoryData.name,
+        p_description: categoryData.description || null
+      })
+
+      if (error) {
+        console.error('Error creating category:', error)
+        return {
+          success: false,
+          message: 'Failed to create category'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error creating category:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async updateCategory(categoryId: number, categoryData: CategoryFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('update_category', {
+        p_category_id: categoryId,
+        p_name: categoryData.name,
+        p_description: categoryData.description || null
+      })
+
+      if (error) {
+        console.error('Error updating category:', error)
+        return {
+          success: false,
+          message: 'Failed to update category'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error updating category:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async deleteCategory(categoryId: number): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('delete_category', {
+        p_category_id: categoryId
+      })
+
+      if (error) {
+        console.error('Error deleting category:', error)
+        return {
+          success: false,
+          message: 'Failed to delete category'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error deleting category:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  // Suppliers CRUD operations
   static async getAllSuppliers(): Promise<ServiceResult<Supplier[]>> {
     try {
       const { data, error } = await supabase.rpc('get_all_suppliers')
@@ -271,4 +394,284 @@ export class InventoryService {
       }
     }
   }
+
+  static async getSupplierById(supplierId: number): Promise<ServiceResult<Supplier>> {
+    try {
+      const { data, error } = await supabase.rpc('get_supplier_by_id', {
+        p_supplier_id: supplierId
+      })
+
+      if (error) {
+        console.error('Error fetching supplier:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch supplier details'
+        }
+      }
+
+      if (!data || data.length === 0) {
+        return {
+          success: false,
+          message: 'Supplier not found'
+        }
+      }
+
+      return {
+        success: true,
+        data: data[0],
+        message: 'Supplier fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching supplier:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async createSupplier(supplierData: SupplierFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('create_supplier', {
+        p_name: supplierData.name,
+        p_contact_person: supplierData.contact_person || null,
+        p_phone: supplierData.phone || null,
+        p_email: supplierData.email || null,
+        p_address: supplierData.address || null
+      })
+
+      if (error) {
+        console.error('Error creating supplier:', error)
+        return {
+          success: false,
+          message: 'Failed to create supplier'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error creating supplier:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async updateSupplier(supplierId: number, supplierData: SupplierFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('update_supplier', {
+        p_supplier_id: supplierId,
+        p_name: supplierData.name,
+        p_contact_person: supplierData.contact_person || null,
+        p_phone: supplierData.phone || null,
+        p_email: supplierData.email || null,
+        p_address: supplierData.address || null
+      })
+
+      if (error) {
+        console.error('Error updating supplier:', error)
+        return {
+          success: false,
+          message: 'Failed to update supplier'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error updating supplier:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async deleteSupplier(supplierId: number): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('delete_supplier', {
+        p_supplier_id: supplierId
+      })
+
+      if (error) {
+        console.error('Error deleting supplier:', error)
+        return {
+          success: false,
+          message: 'Failed to delete supplier'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error deleting supplier:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  // Locations CRUD operations
+  static async getAllLocations(): Promise<ServiceResult<Location[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_all_locations')
+
+      if (error) {
+        console.error('Error fetching locations:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch locations'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Locations fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching locations:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async getLocationById(locationId: number): Promise<ServiceResult<Location>> {
+    try {
+      const { data, error } = await supabase.rpc('get_location_by_id', {
+        p_location_id: locationId
+      })
+
+      if (error) {
+        console.error('Error fetching location:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch location details'
+        }
+      }
+
+      if (!data || data.length === 0) {
+        return {
+          success: false,
+          message: 'Location not found'
+        }
+      }
+
+      return {
+        success: true,
+        data: data[0],
+        message: 'Location fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching location:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async createLocation(locationData: LocationFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('create_location', {
+        p_name: locationData.name,
+        p_address: locationData.address || null,
+        p_is_active: locationData.is_active
+      })
+
+      if (error) {
+        console.error('Error creating location:', error)
+        return {
+          success: false,
+          message: 'Failed to create location'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error creating location:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async updateLocation(locationId: number, locationData: LocationFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('update_location', {
+        p_location_id: locationId,
+        p_name: locationData.name,
+        p_address: locationData.address || null,
+        p_is_active: locationData.is_active
+      })
+
+      if (error) {
+        console.error('Error updating location:', error)
+        return {
+          success: false,
+          message: 'Failed to update location'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error updating location:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async deleteLocation(locationId: number): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('delete_location', {
+        p_location_id: locationId
+      })
+
+      if (error) {
+        console.error('Error deleting location:', error)
+        return {
+          success: false,
+          message: 'Failed to delete location'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error deleting location:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
 }
+```

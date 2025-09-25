@@ -1,3 +1,4 @@
+```typescript
 export interface Product {
   product_id: number
   sku: string
@@ -15,18 +16,6 @@ export interface Product {
   total_quantity?: number
 }
 
-export interface Category {
-  category_id: number
-  name: string
-  description?: string
-}
-
-export interface Supplier {
-  supplier_id: number
-  name: string
-  contact_person?: string
-}
-
 export interface ProductFormData {
   name: string
   sku: string
@@ -42,3 +31,48 @@ export interface ProductFilters {
   category_id: number | null
   supplier_id: number | null
 }
+
+export interface Category {
+  category_id: number
+  name: string
+  description?: string | null
+  user_id?: string
+}
+
+export interface CategoryFormData {
+  name: string
+  description: string | null
+}
+
+export interface Supplier {
+  supplier_id: number
+  name: string
+  contact_person?: string | null
+  phone?: string | null
+  email?: string | null
+  address?: string | null
+  user_id?: string
+}
+
+export interface SupplierFormData {
+  name: string
+  contact_person: string | null
+  phone: string | null
+  email: string | null
+  address: string | null
+}
+
+export interface Location {
+  location_id: number
+  name: string
+  address?: string | null
+  is_active: boolean
+  user_id?: string
+}
+
+export interface LocationFormData {
+  name: string
+  address: string | null
+  is_active: boolean
+}
+```

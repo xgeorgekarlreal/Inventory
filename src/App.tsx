@@ -13,6 +13,12 @@ import PersonaManagement from './pages/PersonaManagement'
 import ProductsPage from './pages/inventory/ProductsPage'
 import ProductDetailPage from './pages/inventory/ProductDetailPage'
 import CreateProductPage from './pages/inventory/CreateProductPage'
+import LocationsPage from './pages/management/LocationsPage'
+import CreateLocationPage from './pages/management/CreateLocationPage'
+import EditLocationPage from './pages/management/EditLocationPage'
+import SuppliersPage from './pages/management/SuppliersPage'
+import CreateSupplierPage from './pages/management/CreateSupplierPage'
+import EditSupplierPage from './pages/management/EditSupplierPage'
 import EditProductPage from './pages/inventory/EditProductPage'
 import { 
   BarChart3, 
@@ -123,43 +129,58 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/inventory/stock" element={
-            <ProtectedRoute>
-              <PersonaProtectedRoute>
-                <Layout>
-                  <PlaceholderPage 
-                    title="Stock on Hand" 
-                    description="View current stock levels and inventory quantities."
-                    icon={FileText}
-                  />
-                </Layout>
-              </PersonaProtectedRoute>
-            </ProtectedRoute>
-          } />
-          
-          <Route path="/inventory/transactions" element={
-            <ProtectedRoute>
-              <PersonaProtectedRoute>
-                <Layout>
-                  <PlaceholderPage 
-                    title="Transactions" 
-                    description="View and manage inventory transactions and movements."
-                    icon={FileText}
-                  />
-                </Layout>
-              </PersonaProtectedRoute>
-            </ProtectedRoute>
-          } />
-          
           {/* Management Routes */}
           <Route path="/management/locations" element={
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <PlaceholderPage 
-                    title="Locations" 
-                    description="Manage warehouse locations and storage areas."
-                    icon={FileText}
+                  <LocationsPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/locations/create" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <CreateLocationPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/locations/:locationId/edit" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <EditLocationPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/management/suppliers" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <SuppliersPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/suppliers/create" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <CreateSupplierPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/suppliers/:supplierId/edit" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <EditSupplierPage />
                   />
                 </Layout>
               </PersonaProtectedRoute>
@@ -184,16 +205,35 @@ function App() {
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <PlaceholderPage 
-                    title="Categories" 
-                    description="Organize products into categories and subcategories."
-                    icon={FileText}
+                  <CategoriesPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/categories/create" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <CreateCategoryPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          <Route path="/management/categories/:categoryId/edit" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <EditCategoryPage />
                   />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
           } />
           
+          {/* Placeholder Routes (if not yet implemented) */}
+          <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><PlaceholderPage title="Stock on Hand" description="View current stock levels and inventory quantities." icon={FileText}/></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          <Route path="/inventory/transactions" element={<ProtectedRoute><PersonaProtectedRoute><Layout><PlaceholderPage title="Transactions" description="View and manage inventory transactions and movements." icon={FileText}/></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+
           {/* Reports Route */}
           <Route path="/reports" element={
             <ProtectedRoute>
