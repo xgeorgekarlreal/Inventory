@@ -180,7 +180,7 @@ function App() {
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <EditSupplierPage />
+                  <EditSupplierPage /> 
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
