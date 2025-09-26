@@ -23,7 +23,7 @@ import SuppliersPage from './pages/management/SuppliersPage'
 import CreateSupplierPage from './pages/management/CreateSupplierPage'
 import EditSupplierPage from './pages/management/EditSupplierPage'
 import EditProductPage from './pages/inventory/EditProductPage'
-import StockPage from './pages/inventory/StockPage'
+{/*import StockPage from './pages/inventory/StockPage'*/}
 import TransactionsPage from './pages/inventory/TransactionsPage'
 import { 
   BarChart3, 
@@ -233,8 +233,8 @@ function App() {
             </ProtectedRoute>
           } /> 
           
-          {/* Placeholder Routes (if not yet implemented) */}
-          <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          {/* Placeholder Routes (if not yet implemented)<Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} /> */}
+          
           <Route path="/inventory/transactions" element={<ProtectedRoute><PersonaProtectedRoute><Layout><TransactionsPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
 
           {/* Reports Route */}
