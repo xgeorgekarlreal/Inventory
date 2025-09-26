@@ -672,7 +672,7 @@ export class InventoryService {
       }
     }
   }
-
+ 
   // Transactions operations
   static async getAllTransactions(filters?: {
     start_date?: string | null
