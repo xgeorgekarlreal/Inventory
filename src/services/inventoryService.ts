@@ -680,7 +680,6 @@ export class InventoryService {
     transaction_types?: TransactionType[]
     product_id?: number | null
     location_id?: number | null
-    user_id?: string | null
   }): Promise<ServiceResult<Transaction[]>> {
     try {
       const { data, error } = await supabase.rpc('get_all_transactions', {
@@ -689,7 +688,6 @@ export class InventoryService {
         p_transaction_types: filters?.transaction_types || null,
         p_product_id: filters?.product_id || null,
         p_location_id: filters?.location_id || null,
-        p_user_id: filters?.user_id || null
       })
 
       if (error) {
