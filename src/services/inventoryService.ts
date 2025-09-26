@@ -672,4 +672,45 @@ export class InventoryService {
       }
     }
   }
+
+  // Transactions operations
+  static async getAllTransactions(filters?: {
+    start_date?: string | null
+    end_date?: string | null
+    transaction_types?: TransactionType[]
+    product_id?: number | null
+    location_id?: number | null
+    user_id?: string | null
+  }): Promise<ServiceResult<Transaction[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_all_transactions', {
+        p_start_date: filters?.start_date || null,
+        p_end_date: filters?.end_date || null,
+        p_transaction_types: filters?.transaction_types || null,
+        p_product_id: filters?.product_id || null,
+        p_location_id: filters?.location_id || null,
+        p_user_id: filters?.user_id || null
+      })
+
+      if (error) {
+        console.error('Error fetching transactions:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch transactions'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Transactions fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching transactions:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
 }

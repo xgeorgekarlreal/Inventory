@@ -23,6 +23,8 @@ import SuppliersPage from './pages/management/SuppliersPage'
 import CreateSupplierPage from './pages/management/CreateSupplierPage'
 import EditSupplierPage from './pages/management/EditSupplierPage'
 import EditProductPage from './pages/inventory/EditProductPage'
+import StockPage from './pages/inventory/StockPage'
+import TransactionsPage from './pages/inventory/TransactionsPage'
 import { 
   BarChart3, 
   FileText, 
@@ -232,8 +234,8 @@ function App() {
           } /> 
           
           {/* Placeholder Routes (if not yet implemented) */}
-          <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><PlaceholderPage title="Stock on Hand" description="View current stock levels and inventory quantities." icon={FileText}/></Layout></PersonaProtectedRoute></ProtectedRoute>} />
-          <Route path="/inventory/transactions" element={<ProtectedRoute><PersonaProtectedRoute><Layout><PlaceholderPage title="Transactions" description="View and manage inventory transactions and movements." icon={FileText}/></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          <Route path="/inventory/transactions" element={<ProtectedRoute><PersonaProtectedRoute><Layout><TransactionsPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
 
           {/* Reports Route */}
           <Route path="/reports" element={

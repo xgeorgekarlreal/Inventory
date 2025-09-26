@@ -74,3 +74,35 @@ export interface LocationFormData {
   address: string | null
   is_active: boolean
 }
+
+export interface RecordSaleFormData {
+  product_id: number
+  location_id: number
+  quantity: number
+  batch_id?: number | null
+  reference_id?: string
+  notes?: string
+}
+
+export interface Transaction {
+  transaction_id: number
+  created_at: string
+  product_name: string
+  product_sku: string
+  location_name: string
+  batch_lot_number?: string | null
+  transaction_type: TransactionType
+  quantity_change: number
+  user_email?: string | null
+  notes?: string | null
+  reference_id?: string | null
+}
+
+export interface TransactionFilters {
+  start_date: string | null
+  end_date: string | null
+  transaction_types: TransactionType[]
+  product_id: number | null
+  location_id: number | null
+  user_id: string | null
+}
