@@ -86,7 +86,7 @@ const TransactionsPage: React.FC = () => {
     // If any filters are applied, fetch filtered data from server
     const hasFilters = filters.start_date || filters.end_date || 
                       filters.transaction_types.length > 0 || 
-                      filters.product_id || filters.location_id || filters.user_id
+                      filters.product_id || filters.location_id
 
     if (hasFilters) {
       setLoading(true)
@@ -97,7 +97,6 @@ const TransactionsPage: React.FC = () => {
           transaction_types: filters.transaction_types.length > 0 ? filters.transaction_types : undefined,
           product_id: filters.product_id,
           location_id: filters.location_id,
-          user_id: filters.user_id
         })
 
         if (result.success) {
