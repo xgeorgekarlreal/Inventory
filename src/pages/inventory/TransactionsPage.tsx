@@ -37,7 +37,6 @@ const TransactionsPage: React.FC = () => {
     transaction_types: [],
     product_id: null,
     location_id: null,
-    user_id: null
   })
 
   // UI state
