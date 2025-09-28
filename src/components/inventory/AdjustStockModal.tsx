@@ -10,6 +10,7 @@ interface AdjustStockModalProps {
   products: Product[]
   locations: Location[]
   stockItems: StockOnHandItem[] // To help select existing batches
+  preSelectedLocationId?: number | null
 }
 
 const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
@@ -19,6 +20,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   products,
   locations,
   stockItems,
+  preSelectedLocationId,
 }) => {
   const [formData, setFormData] = useState<AdjustStockFormData>({
     product_id: null,
@@ -38,7 +40,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
       // Reset form when modal opens
       setFormData({
         product_id: null,
-        location_id: null,
+        location_id: preSelectedLocationId || null,
         quantity_change: 0,
         batch_id: null,
         notes: null,
@@ -47,7 +49,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
       setError('')
       setAvailableBatches([])
     }
-  }, [isOpen])
+  }, [isOpen, preSelectedLocationId])
 
   useEffect(() => {
     if (formData.product_id && formData.location_id) {
@@ -161,6 +163,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
                 onChange={(e) =>
                   handleInputChange('location_id', e.target.value ? parseInt(e.target.value) : null)
                 }
+                disabled={!!preSelectedLocationId}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               >
                 <option value="">Select location</option>

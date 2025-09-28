@@ -25,6 +25,7 @@ import EditSupplierPage from './pages/management/EditSupplierPage'
 import EditProductPage from './pages/inventory/EditProductPage'
 import StockPage from './pages/inventory/StockPage'
 import TransactionsPage from './pages/inventory/TransactionsPage'
+import StockByLocationPage from './pages/inventory/StockByLocationPage'
 import ReportsPage from './pages/reports/ReportsPage'
 import InventoryValuationReportPage from './pages/reports/InventoryValuationReportPage'
 import { 
@@ -71,6 +72,16 @@ function App() {
               <PersonaProtectedRoute>
                 <Layout>
                   <ProductsPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/inventory/stock-by-location" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <StockByLocationPage />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
@@ -237,7 +248,9 @@ function App() {
           
           {/* Placeholder Routes (if not yet implemented)<Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} /> */}
           <Route path="/inventory/stock" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          <Route path="/inventory/stock/:locationId" element={<ProtectedRoute><PersonaProtectedRoute><Layout><StockPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
           <Route path="/inventory/transactions" element={<ProtectedRoute><PersonaProtectedRoute><Layout><TransactionsPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
+          <Route path="/inventory/transactions/:locationId" element={<ProtectedRoute><PersonaProtectedRoute><Layout><TransactionsPage /></Layout></PersonaProtectedRoute></ProtectedRoute>} />
 
           {/* Reports Route */}
           <Route path="/reports" element={

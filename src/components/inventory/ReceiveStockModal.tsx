@@ -9,6 +9,7 @@ interface ReceiveStockModalProps {
   onSuccess: () => void
   products: Product[]
   locations: Location[]
+  preSelectedLocationId?: number | null
 }
 
 const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
@@ -17,6 +18,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
   onSuccess,
   products,
   locations,
+  preSelectedLocationId,
 }) => {
   const [formData, setFormData] = useState<ReceiveStockFormData>({
     product_id: null,
@@ -35,7 +37,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
       // Reset form when modal opens
       setFormData({
         product_id: null,
-        location_id: null,
+        location_id: preSelectedLocationId || null,
         quantity: 1,
         lot_number: null,
         expiry_date: null,
@@ -44,7 +46,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
       })
       setError('')
     }
-  }, [isOpen])
+  }, [isOpen, preSelectedLocationId])
 
   const handleInputChange = (field: keyof ReceiveStockFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -141,6 +143,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
                 onChange={(e) =>
                   handleInputChange('location_id', e.target.value ? parseInt(e.target.value) : null)
                 }
+                disabled={!!preSelectedLocationId}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Select location</option>

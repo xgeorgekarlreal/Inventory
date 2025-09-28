@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { InventoryService } from '../../services/inventoryService'
 import { Product, Location, StockOnHandItem } from '../../types/inventory'
@@ -12,7 +13,9 @@ import {
   CheckCircle,
   Package,
   Clock,
-  Minus
+  Minus,
+  ArrowLeft,
+  FileText
 } from 'lucide-react'
 
 import ReceiveStockModal from '../../components/inventory/ReceiveStockModal'
@@ -22,6 +25,7 @@ import RecordSaleModal from '../../components/inventory/RecordSaleModal'
 
 const StockPage: React.FC = () => {
   const { persona } = useAuth()
+  const { locationId } = useParams<{ locationId: string }>()
   const [stockOnHand, setStockOnHand] = useState<StockOnHandItem[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [products, setProducts] = useState<Product[]>([])
@@ -30,6 +34,7 @@ const StockPage: React.FC = () => {
   const [success, setSuccess] = useState('')
 
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null)
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null)
 
   // Modal states
   const [showReceiveModal, setShowReceiveModal] = useState(false)
@@ -38,8 +43,23 @@ const StockPage: React.FC = () => {
   const [showSaleModal, setShowSaleModal] = useState(false)
 
   useEffect(() => {
+    // If locationId is provided in URL, set it as selected
+    if (locationId) {
+      const parsedLocationId = parseInt(locationId)
+      setSelectedLocationId(parsedLocationId)
+    }
     loadData()
-  }, [selectedLocationId])
+  }, [selectedLocationId, locationId])
+
+  useEffect(() => {
+    // Find and set current location details
+    if (selectedLocationId && locations.length > 0) {
+      const location = locations.find(loc => loc.location_id === selectedLocationId)
+      setCurrentLocation(location || null)
+    } else {
+      setCurrentLocation(null)
+    }
+  }, [selectedLocationId, locations])
 
   const loadData = async () => {
     setLoading(true)
@@ -120,12 +140,57 @@ const StockPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Stock on Hand</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            View current inventory levels and perform stock operations.
-          </p>
+          {locationId && currentLocation && (
+            <div className="flex items-center space-x-4 mb-2">
+              <Link
+                to="/inventory/stock-by-location"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Stock at {currentLocation.name}
+                </h1>
+                <p className="mt-1 text-sm text-gray-600">
+                  View and manage inventory for this specific location.
+                </p>
+              </div>
+            </div>
+          )}
+          {!locationId && (
+            <>
+              <h1 className="text-2xl font-bold text-gray-900">Stock on Hand</h1>
+              <p className="mt-1 text-sm text-gray-600">
+                View current inventory levels and perform stock operations.
+              </p>
+            </>
+          )}
         </div>
         <div className="flex items-center space-x-3">
+
+      {locationId && currentLocation && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <Warehouse className="h-5 w-5 text-blue-600" />
+            <div>
+              <h3 className="text-sm font-medium text-blue-900">Location Details</h3>
+              <p className="text-sm text-blue-700">
+                {currentLocation.address || 'No address specified'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+          {locationId && currentLocation && (
+            <Link
+              to={`/inventory/transactions/${locationId}`}
+              className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <FileText className="h-4 w-4" />
+              <span>View History</span>
+            </Link>
+          )}
           <button
             onClick={() => setShowReceiveModal(true)}
             className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -192,6 +257,7 @@ const StockPage: React.FC = () => {
           <select
             value={selectedLocationId || ''}
             onChange={handleLocationFilterChange}
+            disabled={!!locationId} // Disable if locationId is in URL
             className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">All Locations</option>
@@ -288,6 +354,7 @@ const StockPage: React.FC = () => {
         }}
         products={products}
         locations={locations}
+        preSelectedLocationId={selectedLocationId}
       />
       <AdjustStockModal
         isOpen={showAdjustModal}
@@ -299,6 +366,7 @@ const StockPage: React.FC = () => {
         products={products}
         locations={locations}
         stockItems={stockOnHand}
+        preSelectedLocationId={selectedLocationId}
       />
       <TransferStockModal
         isOpen={showTransferModal}
@@ -310,6 +378,7 @@ const StockPage: React.FC = () => {
         products={products}
         locations={locations}
         stockItems={stockOnHand}
+        preSelectedLocationId={selectedLocationId}
       />
       <RecordSaleModal
         isOpen={showSaleModal}
@@ -321,6 +390,7 @@ const StockPage: React.FC = () => {
         products={products}
         locations={locations}
         stockItems={stockOnHand}
+        preSelectedLocationId={selectedLocationId}
       />
     </div>
   )
