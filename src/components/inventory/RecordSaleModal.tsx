@@ -263,4 +263,3 @@ const RecordSaleModal: React.FC<RecordSaleModalProps> = ({
 }
 
 export default RecordSaleModal
-```
