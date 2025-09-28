@@ -169,4 +169,3 @@ export interface RecordSaleFormData {
   notes: string | null
   reference_id: string | null
 }
-```
