@@ -1,5 +1,11 @@
+```typescript
 import { supabase } from '../lib/supabase'
-import { Product, Category, Supplier, ProductFormData, Location, LocationFormData, CategoryFormData, SupplierFormData } from '../types/inventory'
+import { 
+  Product, Category, Supplier, Location, Transaction, StockOnHandItem,
+  ProductFormData, LocationFormData, CategoryFormData, SupplierFormData,
+  ReceiveStockFormData, AdjustStockFormData, TransferStockFormData, RecordSaleFormData,
+  TransactionType
+} from '../types/inventory'
 
 export interface ServiceResult<T = any> {
   success: boolean
@@ -711,4 +717,168 @@ export class InventoryService {
       }
     }
   }
+
+  // Stock on Hand operations
+  static async getStockOnHand(locationId: number | null = null): Promise<ServiceResult<StockOnHandItem[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_stock_on_hand', {
+        p_location_id: locationId
+      })
+
+      if (error) {
+        console.error('Error fetching stock on hand:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch stock on hand'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Stock on hand fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching stock on hand:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async recordPurchaseReceipt(formData: ReceiveStockFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('record_purchase_receipt', {
+        p_product_id: formData.product_id,
+        p_location_id: formData.location_id,
+        p_quantity: formData.quantity,
+        p_lot_number: formData.lot_number,
+        p_expiry_date: formData.expiry_date,
+        p_notes: formData.notes,
+        p_reference_id: formData.reference_id
+      })
+
+      if (error) {
+        console.error('Error recording purchase receipt:', error)
+        return {
+          success: false,
+          message: 'Failed to record purchase receipt'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error recording purchase receipt:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async recordStockAdjustment(formData: AdjustStockFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('record_stock_adjustment', {
+        p_product_id: formData.product_id,
+        p_location_id: formData.location_id,
+        p_quantity_change: formData.quantity_change,
+        p_batch_id: formData.batch_id,
+        p_notes: formData.notes,
+        p_reference_id: formData.reference_id
+      })
+
+      if (error) {
+        console.error('Error recording stock adjustment:', error)
+        return {
+          success: false,
+          message: 'Failed to record stock adjustment'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error recording stock adjustment:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async recordStockTransfer(formData: TransferStockFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('record_stock_transfer', {
+        p_product_id: formData.product_id,
+        p_source_location_id: formData.source_location_id,
+        p_destination_location_id: formData.destination_location_id,
+        p_quantity: formData.quantity,
+        p_batch_id: formData.batch_id,
+        p_notes: formData.notes,
+        p_reference_id: formData.reference_id
+      })
+
+      if (error) {
+        console.error('Error recording stock transfer:', error)
+        return {
+          success: false,
+          message: 'Failed to record stock transfer'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error recording stock transfer:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async recordSale(formData: RecordSaleFormData): Promise<ServiceResult> {
+    try {
+      const { data, error } = await supabase.rpc('record_sale', {
+        p_product_id: formData.product_id,
+        p_location_id: formData.location_id,
+        p_quantity: formData.quantity,
+        p_batch_id: formData.batch_id,
+        p_notes: formData.notes,
+        p_reference_id: formData.reference_id
+      })
+
+      if (error) {
+        console.error('Error recording sale:', error)
+        return {
+          success: false,
+          message: 'Failed to record sale'
+        }
+      }
+
+      const result = data?.[0]
+      return {
+        success: result?.success || false,
+        message: result?.message || 'Unknown error occurred'
+      }
+    } catch (error) {
+      console.error('Error recording sale:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
 }
+```

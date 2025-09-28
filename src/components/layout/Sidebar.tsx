@@ -44,7 +44,7 @@ const navigation: NavigationItem[] = [
     icon: Box,
     children: [
       { name: 'Products', href: '/inventory/products', icon: Package },
-      { name: 'Stock on Hand', href: '/inventory/stock', icon: Warehouse },
+      { name: 'Stock on Hand', href: '/inventory/stock', icon: Warehouse, adminOnly: true },
       { name: 'Transactions', href: '/inventory/transactions', icon: ArrowUpDown },
     ]
   },
