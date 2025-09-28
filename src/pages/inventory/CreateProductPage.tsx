@@ -20,7 +20,7 @@ const CreateProductPage: React.FC = () => {
 
   const handleSubmit = async (data: ProductFormData) => {
     setLoading(true)
-    
+    console.log(data);
     try {
       
       const result = await InventoryService.createProduct(data)
