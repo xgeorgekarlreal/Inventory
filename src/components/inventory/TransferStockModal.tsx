@@ -1,4 +1,3 @@
-```typescript
 import React, { useState, useEffect } from 'react'
 import { Product, Location, TransferStockFormData, StockOnHandItem } from '../../types/inventory'
 import { InventoryService } from '../../services/inventoryService'
@@ -296,4 +295,3 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
 }
 
 export default TransferStockModal
-```
