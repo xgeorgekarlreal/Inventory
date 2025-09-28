@@ -190,7 +190,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
                   {availableBatches.map((batch) => (
                     <option key={batch.batch_id} value={batch.batch_id}>
                       {batch.lot_number} (Qty: {batch.quantity}){' '}
-                      {batch.expiry_date ? `Exp: ${batch.expiry_date}` : ''}
+                      {batch.expiry_date ? \`Exp: ${batch.expiry_date}` : ''}
                     </option>
                   ))}
                 </select>
