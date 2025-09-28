@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { InventoryService } from '../../services/inventoryService'
 import { Transaction, TransactionFilters, Product, Location, TransactionType } from '../../types/inventory'
@@ -20,15 +21,18 @@ import {
   Plus,
   Minus
 } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 
 const TransactionsPage: React.FC = () => {
   const { persona } = useAuth()
+  const { locationId } = useParams<{ locationId: string }>()
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [locations, setLocations] = useState<Location[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [currentLocation, setCurrentLocation] = useState<Location | null>(null)
 
   // Filter state
   const [filters, setFilters] = useState<TransactionFilters>({
@@ -43,12 +47,30 @@ const TransactionsPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
+    // If locationId is provided in URL, set it as filter
+    if (locationId) {
+      const parsedLocationId = parseInt(locationId)
+      setFilters(prev => ({
+        ...prev,
+        location_id: parsedLocationId
+      }))
+    }
     loadData()
-  }, [])
+  }, [locationId])
 
   useEffect(() => {
     applyFilters()
   }, [transactions, filters])
+
+  useEffect(() => {
+    // Find and set current location details
+    if (filters.location_id && locations.length > 0) {
+      const location = locations.find(loc => loc.location_id === filters.location_id)
+      setCurrentLocation(location || null)
+    } else {
+      setCurrentLocation(null)
+    }
+  }, [filters.location_id, locations])
 
   const loadData = async () => {
     setLoading(true)
@@ -219,10 +241,32 @@ const TransactionsPage: React.FC = () => {
       {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Transaction Log</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Complete audit trail of all inventory movements.
-          </p>
+          {locationId && currentLocation && (
+            <div className="flex items-center space-x-4 mb-2">
+              <Link
+                to="/inventory/stock-by-location"
+                className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Link>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Transaction History - {currentLocation.name}
+                </h1>
+                <p className="mt-1 text-sm text-gray-600">
+                  Complete audit trail of inventory movements for this location.
+                </p>
+              </div>
+            </div>
+          )}
+          {!locationId && (
+            <>
+              <h1 className="text-2xl font-bold text-gray-900">Transaction Log</h1>
+              <p className="mt-1 text-sm text-gray-600">
+                Complete audit trail of all inventory movements.
+              </p>
+            </>
+          )}
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
@@ -315,6 +359,7 @@ const TransactionsPage: React.FC = () => {
               <select
                 value={filters.location_id || ''}
                 onChange={(e) => handleFilterChange('location_id', e.target.value ? parseInt(e.target.value) : null)}
+                disabled={!!locationId} // Disable if locationId is in URL
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">All locations</option>
@@ -364,6 +409,20 @@ const TransactionsPage: React.FC = () => {
             >
               Apply Filters
             </button>
+          </div>
+        </div>
+      )}
+
+      {locationId && currentLocation && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center space-x-3">
+            <FileText className="h-5 w-5 text-blue-600" />
+            <div>
+              <h3 className="text-sm font-medium text-blue-900">Location Details</h3>
+              <p className="text-sm text-blue-700">
+                {currentLocation.address || 'No address specified'}
+              </p>
+            </div>
           </div>
         </div>
       )}

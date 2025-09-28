@@ -10,6 +10,7 @@ interface TransferStockModalProps {
   products: Product[]
   locations: Location[]
   stockItems: StockOnHandItem[] // To help select existing batches and check available stock
+  preSelectedLocationId?: number | null
 }
 
 const TransferStockModal: React.FC<TransferStockModalProps> = ({
@@ -19,6 +20,7 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
   products,
   locations,
   stockItems,
+  preSelectedLocationId,
 }) => {
   const [formData, setFormData] = useState<TransferStockFormData>({
     product_id: null,
@@ -39,7 +41,7 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
       // Reset form when modal opens
       setFormData({
         product_id: null,
-        source_location_id: null,
+        source_location_id: preSelectedLocationId || null,
         destination_location_id: null,
         quantity: 1,
         batch_id: null,
@@ -49,7 +51,7 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
       setError('')
       setAvailableBatches([])
     }
-  }, [isOpen])
+  }, [isOpen, preSelectedLocationId])
 
   useEffect(() => {
     if (formData.product_id && formData.source_location_id) {
@@ -170,6 +172,7 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
                 onChange={(e) =>
                   handleInputChange('source_location_id', e.target.value ? parseInt(e.target.value) : null)
                 }
+                disabled={!!preSelectedLocationId}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               >
                 <option value="">Select source location</option>

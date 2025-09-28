@@ -18,7 +18,8 @@ import {
   MapPin,
   Truck,
   Tag,
-  DollarSign
+  DollarSign,
+  Building
 } from 'lucide-react'
 
 interface SidebarProps {
@@ -46,6 +47,7 @@ const navigation: NavigationItem[] = [
     children: [
       { name: 'Products', href: '/inventory/products', icon: Package },
       { name: 'Stock on Hand', href: '/inventory/stock', icon: Warehouse, adminOnly: true },
+      { name: 'Stock by Location', href: '/inventory/stock-by-location', icon: Building, adminOnly: true },
       { name: 'Transactions', href: '/inventory/transactions', icon: ArrowUpDown },
     ]
   },
