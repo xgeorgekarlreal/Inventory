@@ -23,6 +23,7 @@ const CreateProductPage: React.FC = () => {
     
     try {
       console.log(data);
+      
       const result = await InventoryService.createProduct(data)
       
       if (result.success) {
