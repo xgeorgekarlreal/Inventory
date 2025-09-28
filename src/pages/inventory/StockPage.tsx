@@ -327,4 +327,3 @@ const StockPage: React.FC = () => {
 }
 
 export default StockPage
-```
