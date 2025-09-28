@@ -1,4 +1,3 @@
-```typescript
 export interface Product {
   product_id: number
   sku: string
