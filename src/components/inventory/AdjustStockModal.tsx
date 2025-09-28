@@ -266,4 +266,3 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
 }
 
 export default AdjustStockModal
-```
