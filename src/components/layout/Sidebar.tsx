@@ -66,9 +66,7 @@ const navigation: NavigationItem[] = [
 ]
 
 const adminOnlyNavigation: NavigationItem[] = [
-  { name: 'Profile', href: '/profile', icon: User },
   { name: 'Persona Management', href: '/persona-management', icon: Shield },
-  { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
