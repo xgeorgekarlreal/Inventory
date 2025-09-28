@@ -247,4 +247,3 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
 }
 
 export default ReceiveStockModal
-```
