@@ -68,6 +68,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
       setError('Quantity must be greater than 0.')
       return
     }
+    console.log(formData);
 
     setLoading(true)
     try {
