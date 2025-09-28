@@ -22,7 +22,6 @@ const CreateProductPage: React.FC = () => {
     setLoading(true)
     
     try {
-      console.log(data);
       
       const result = await InventoryService.createProduct(data)
       
