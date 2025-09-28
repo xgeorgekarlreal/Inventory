@@ -168,3 +168,50 @@ export interface RecordSaleFormData {
   notes: string | null
   reference_id: string | null
 }
+
+// Report interfaces
+export interface InventoryValuationItem {
+  product_id: number
+  product_name: string
+  sku: string
+  category_name: string | null
+  location_name: string | null
+  unit_price: number
+  current_quantity: number
+  total_value: number
+}
+
+export interface ExpirationReportItem {
+  batch_id: number
+  product_name: string
+  sku: string
+  lot_number: string
+  expiry_date: string | null
+  received_date: string
+  location_name: string | null
+  quantity_on_hand: number
+}
+
+export interface LowStockReportItem {
+  product_id: number
+  product_name: string
+  sku: string
+  supplier_name: string | null
+  location_name: string | null
+  current_quantity: number
+  reorder_level: number
+}
+
+export interface DetailedTransactionItem {
+  transaction_id: number
+  created_at: string
+  product_name: string
+  product_sku: string
+  location_name: string
+  batch_lot_number: string | null
+  transaction_type: TransactionType
+  quantity_change: number
+  user_email: string | null
+  notes: string | null
+  reference_id: string | null
+}
