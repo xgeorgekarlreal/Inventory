@@ -1,4 +1,3 @@
-```typescript
 import React, { useState, useEffect } from 'react'
 import { Product, Location, AdjustStockFormData, StockOnHandItem } from '../../types/inventory'
 import { InventoryService } from '../../services/inventoryService'
