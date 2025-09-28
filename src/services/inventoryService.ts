@@ -3,7 +3,7 @@ import {
   Product, Category, Supplier, Location, Transaction, StockOnHandItem,
   ProductFormData, LocationFormData, CategoryFormData, SupplierFormData,
   ReceiveStockFormData, AdjustStockFormData, TransferStockFormData, RecordSaleFormData,
-  TransactionType
+  TransactionType, InventoryValuationItem, ExpirationReportItem, LowStockReportItem, DetailedTransactionItem
 } from '../types/inventory'
 
 export interface ServiceResult<T = any> {
@@ -873,6 +873,133 @@ export class InventoryService {
       }
     } catch (error) {
       console.error('Error recording sale:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  // Reports operations
+  static async getInventoryValuationReport(locationId?: number | null, categoryId?: number | null): Promise<ServiceResult<InventoryValuationItem[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_inventory_valuation_report', {
+        p_location_id: locationId || null,
+        p_category_id: categoryId || null
+      })
+
+      if (error) {
+        console.error('Error fetching inventory valuation report:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch inventory valuation report'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Inventory valuation report fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching inventory valuation report:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async getExpirationReport(locationId?: number | null, startDate?: string | null, endDate?: string | null): Promise<ServiceResult<ExpirationReportItem[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_expiration_report', {
+        p_location_id: locationId || null,
+        p_start_date: startDate || null,
+        p_end_date: endDate || null
+      })
+
+      if (error) {
+        console.error('Error fetching expiration report:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch expiration report'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Expiration report fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching expiration report:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async getLowStockReport(locationId?: number | null, supplierId?: number | null): Promise<ServiceResult<LowStockReportItem[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_low_stock_report', {
+        p_location_id: locationId || null,
+        p_supplier_id: supplierId || null
+      })
+
+      if (error) {
+        console.error('Error fetching low stock report:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch low stock report'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Low stock report fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching low stock report:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  static async getDetailedTransactionHistory(
+    startDate?: string | null, 
+    endDate?: string | null, 
+    productId?: number | null, 
+    transactionTypes?: TransactionType[] | null, 
+    userId?: string | null
+  ): Promise<ServiceResult<DetailedTransactionItem[]>> {
+    try {
+      const { data, error } = await supabase.rpc('get_detailed_transaction_history', {
+        p_start_date: startDate || null,
+        p_end_date: endDate || null,
+        p_product_id: productId || null,
+        p_transaction_types: transactionTypes || null,
+        p_user_id: userId || null
+      })
+
+      if (error) {
+        console.error('Error fetching detailed transaction history:', error)
+        return {
+          success: false,
+          message: 'Failed to fetch detailed transaction history'
+        }
+      }
+
+      return {
+        success: true,
+        data: data || [],
+        message: 'Detailed transaction history fetched successfully'
+      }
+    } catch (error) {
+      console.error('Error fetching detailed transaction history:', error)
       return {
         success: false,
         message: 'Network error occurred'

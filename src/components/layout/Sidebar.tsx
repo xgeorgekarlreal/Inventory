@@ -17,7 +17,8 @@ import {
   ArrowUpDown,
   MapPin,
   Truck,
-  Tag
+  Tag,
+  DollarSign
 } from 'lucide-react'
 
 interface SidebarProps {

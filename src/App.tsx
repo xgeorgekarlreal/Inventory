@@ -25,6 +25,8 @@ import EditSupplierPage from './pages/management/EditSupplierPage'
 import EditProductPage from './pages/inventory/EditProductPage'
 import StockPage from './pages/inventory/StockPage'
 import TransactionsPage from './pages/inventory/TransactionsPage'
+import ReportsPage from './pages/reports/ReportsPage'
+import InventoryValuationReportPage from './pages/reports/InventoryValuationReportPage'
 import { 
   BarChart3, 
   FileText, 
@@ -242,11 +244,17 @@ function App() {
             <ProtectedRoute>
               <PersonaProtectedRoute>
                 <Layout>
-                  <PlaceholderPage 
-                    title="Reports" 
-                    description="Generate and view inventory reports and analytics."
-                    icon={BarChart3}
-                  />
+                  <ReportsPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+          
+          <Route path="/reports/inventory-valuation" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <InventoryValuationReportPage />
                 </Layout>
               </PersonaProtectedRoute>
             </ProtectedRoute>
