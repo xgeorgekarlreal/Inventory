@@ -1,4 +1,3 @@
-```typescript
 import { supabase } from '../lib/supabase'
 import { 
   Product, Category, Supplier, Location, Transaction, StockOnHandItem,
@@ -881,4 +880,3 @@ export class InventoryService {
     }
   }
 }
-```
