@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Product, Location, ReceiveStockFormData } from '../../types/inventory'
 import { InventoryService } from '../../services/inventoryService'
-import { Package, MapPin, Plus, Calendar, Tag, FileText, AlertCircle } from 'lucide-react'
+import { Package, MapPin, Plus, Calendar, FileText, AlertCircle } from 'lucide-react'
 
 interface ReceiveStockModalProps {
   isOpen: boolean
@@ -172,20 +172,6 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
               />
             </div>
 
-            {/* Lot Number */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Lot Number
-              </label>
-              <input
-                type="text"
-                value={formData.lot_number || ''}
-                onChange={(e) => handleInputChange('lot_number', e.target.value || null)}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Optional lot number"
-              />
-            </div>
-
             {/* Expiry Date */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -197,6 +183,9 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
                 onChange={(e) => handleInputChange('expiry_date', e.target.value || null)}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Items with the same expiry date will be stored together. Different expiry dates create separate batches.
+              </p>
             </div>
 
             {/* Reference ID */}

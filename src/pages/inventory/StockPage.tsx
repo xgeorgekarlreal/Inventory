@@ -1,27 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { InventoryService } from '../../services/inventoryService'
 import { Product, Location, StockOnHandItem } from '../../types/inventory'
-import { 
-  Warehouse, 
-  Filter, 
-  Plus, 
-  ArrowRightLeft, 
-  DollarSign, 
-  AlertCircle, 
+import {
+  Warehouse,
+  Filter,
+  Plus,
+  ArrowRightLeft,
+  DollarSign,
+  AlertCircle,
   CheckCircle,
   Package,
-  Clock,
   Minus,
   ArrowLeft,
-  FileText
+  FileText,
+  Search,
+  X,
+  TrendingDown,
+  Calendar
 } from 'lucide-react'
 
 import ReceiveStockModal from '../../components/inventory/ReceiveStockModal'
 import AdjustStockModal from '../../components/inventory/AdjustStockModal'
 import TransferStockModal from '../../components/inventory/TransferStockModal'
 import RecordSaleModal from '../../components/inventory/RecordSaleModal'
+import StockCard from '../../components/inventory/StockCard'
 
 const StockPage: React.FC = () => {
   const { persona } = useAuth()
@@ -35,15 +39,18 @@ const StockPage: React.FC = () => {
 
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null)
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [expiryFilter, setExpiryFilter] = useState<'all' | 'fresh' | 'expiring-soon' | 'expired'>('all')
+  const [stockFilter, setStockFilter] = useState<'all' | 'in-stock' | 'low-stock' | 'out-of-stock'>('all')
 
-  // Modal states
   const [showReceiveModal, setShowReceiveModal] = useState(false)
   const [showAdjustModal, setShowAdjustModal] = useState(false)
   const [showTransferModal, setShowTransferModal] = useState(false)
   const [showSaleModal, setShowSaleModal] = useState(false)
 
+  const [selectedItemForAction, setSelectedItemForAction] = useState<StockOnHandItem | null>(null)
+
   useEffect(() => {
-    // If locationId is provided in URL, set it as selected
     if (locationId) {
       const parsedLocationId = parseInt(locationId)
       setSelectedLocationId(parsedLocationId)
@@ -52,7 +59,6 @@ const StockPage: React.FC = () => {
   }, [selectedLocationId, locationId])
 
   useEffect(() => {
-    // Find and set current location details
     if (selectedLocationId && locations.length > 0) {
       const location = locations.find(loc => loc.location_id === selectedLocationId)
       setCurrentLocation(location || null)
@@ -109,6 +115,63 @@ const StockPage: React.FC = () => {
     setSuccess('')
   }
 
+  const handleQuickAction = (item: StockOnHandItem, action: 'adjust' | 'transfer' | 'sale') => {
+    setSelectedItemForAction(item)
+    if (action === 'adjust') {
+      setShowAdjustModal(true)
+    } else if (action === 'transfer') {
+      setShowTransferModal(true)
+    } else if (action === 'sale') {
+      setShowSaleModal(true)
+    }
+  }
+
+  const getExpiryStatus = (expiryDate: string | null) => {
+    if (!expiryDate) return 'no-expiry'
+
+    const today = new Date()
+    const expiry = new Date(expiryDate)
+    const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+    if (daysUntilExpiry < 0) return 'expired'
+    if (daysUntilExpiry <= 30) return 'expiring-soon'
+    return 'fresh'
+  }
+
+  const filteredStock = useMemo(() => {
+    return stockOnHand.filter(item => {
+      const matchesSearch = searchQuery === '' ||
+        item.product_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.sku.toLowerCase().includes(searchQuery.toLowerCase())
+
+      const expiryStatus = getExpiryStatus(item.expiry_date)
+      const matchesExpiry = expiryFilter === 'all' ||
+        (expiryFilter === 'fresh' && expiryStatus === 'fresh') ||
+        (expiryFilter === 'expiring-soon' && expiryStatus === 'expiring-soon') ||
+        (expiryFilter === 'expired' && expiryStatus === 'expired')
+
+      const matchesStock = stockFilter === 'all' ||
+        (stockFilter === 'in-stock' && item.quantity > 10) ||
+        (stockFilter === 'low-stock' && item.quantity > 0 && item.quantity <= 10) ||
+        (stockFilter === 'out-of-stock' && item.quantity === 0)
+
+      return matchesSearch && matchesExpiry && matchesStock
+    })
+  }, [stockOnHand, searchQuery, expiryFilter, stockFilter])
+
+  const statistics = useMemo(() => {
+    const totalProducts = stockOnHand.length
+    const totalQuantity = stockOnHand.reduce((sum, item) => sum + item.quantity, 0)
+    const lowStockCount = stockOnHand.filter(item => item.quantity > 0 && item.quantity <= 10).length
+    const outOfStockCount = stockOnHand.filter(item => item.quantity === 0).length
+    const expiringSoonCount = stockOnHand.filter(item => {
+      const status = getExpiryStatus(item.expiry_date)
+      return status === 'expiring-soon' || status === 'expired'
+    }).length
+
+    return { totalProducts, totalQuantity, lowStockCount, outOfStockCount, expiringSoonCount }
+  }, [stockOnHand])
+
   const isAdminOrStaff = persona?.type === 'admin' || persona?.type === 'staff'
 
   if (loading) {
@@ -122,7 +185,6 @@ const StockPage: React.FC = () => {
     )
   }
 
-  // Show access denied if not admin or staff
   if (!isAdminOrStaff) {
     return (
       <div className="space-y-6">
@@ -137,7 +199,6 @@ const StockPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
           {locationId && currentLocation && (
@@ -168,20 +229,6 @@ const StockPage: React.FC = () => {
           )}
         </div>
         <div className="flex items-center space-x-3">
-
-      {locationId && currentLocation && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <div className="flex items-center space-x-3">
-            <Warehouse className="h-5 w-5 text-blue-600" />
-            <div>
-              <h3 className="text-sm font-medium text-blue-900">Location Details</h3>
-              <p className="text-sm text-blue-700">
-                {currentLocation.address || 'No address specified'}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
           {locationId && currentLocation && (
             <Link
               to={`/inventory/transactions/${locationId}`}
@@ -207,7 +254,7 @@ const StockPage: React.FC = () => {
           </button>
           <button
             onClick={() => setShowTransferModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
           >
             <ArrowRightLeft className="h-4 w-4" />
             <span>Transfer Stock</span>
@@ -222,13 +269,12 @@ const StockPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Status Messages */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
           <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
           <p className="text-sm text-red-700">{error}</p>
           <button onClick={clearMessages} className="ml-auto text-red-500 hover:text-red-700">
-            ×
+            <X className="h-5 w-5" />
           </button>
         </div>
       )}
@@ -238,113 +284,155 @@ const StockPage: React.FC = () => {
           <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
           <p className="text-sm text-green-700">{success}</p>
           <button onClick={clearMessages} className="ml-auto text-green-500 hover:text-green-700">
-            ×
+            <X className="h-5 w-5" />
           </button>
         </div>
       )}
 
-      {/* Filters */}
-      <div className="bg-white shadow-sm rounded-lg p-6">
-        <div className="flex items-center space-x-3 mb-4">
-          <Filter className="h-5 w-5 text-gray-400" />
-          <h3 className="text-lg font-medium text-gray-900">Filter Stock</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Items</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{statistics.totalProducts}</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Package className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Location
-          </label>
-          <select
-            value={selectedLocationId || ''}
-            onChange={handleLocationFilterChange}
-            disabled={!!locationId} // Disable if locationId is in URL
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">All Locations</option>
-            {locations.map((location) => (
-              <option key={location.location_id} value={location.location_id}>
-                {location.name}
-              </option>
-            ))}
-          </select>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Quantity</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{statistics.totalQuantity}</p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <Warehouse className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Low/Out of Stock</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">
+                {statistics.lowStockCount + statistics.outOfStockCount}
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <TrendingDown className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Expiring Soon</p>
+              <p className="text-2xl font-bold text-gray-900 mt-1">{statistics.expiringSoonCount}</p>
+            </div>
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <Calendar className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Stock on Hand Table */}
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
+      <div className="bg-white shadow-sm rounded-lg p-6">
+        <div className="flex items-center space-x-3 mb-4">
+          <Filter className="h-5 w-5 text-gray-400" />
+          <h3 className="text-lg font-medium text-gray-900">Search & Filter</h3>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by name or SKU..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <select
+              value={selectedLocationId || ''}
+              onChange={handleLocationFilterChange}
+              disabled={!!locationId}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="">All Locations</option>
+              {locations.map((location) => (
+                <option key={location.location_id} value={location.location_id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <select
+              value={expiryFilter}
+              onChange={(e) => setExpiryFilter(e.target.value as any)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Expiry Status</option>
+              <option value="fresh">Fresh</option>
+              <option value="expiring-soon">Expiring Soon</option>
+              <option value="expired">Expired</option>
+            </select>
+          </div>
+
+          <div>
+            <select
+              value={stockFilter}
+              onChange={(e) => setStockFilter(e.target.value as any)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="all">All Stock Levels</option>
+              <option value="in-stock">In Stock</option>
+              <option value="low-stock">Low Stock</option>
+              <option value="out-of-stock">Out of Stock</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white shadow-sm rounded-lg p-6">
+        <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-medium text-gray-900">
-            Current Stock ({stockOnHand.length})
+            Stock Items ({filteredStock.length})
           </h3>
         </div>
 
-        {stockOnHand.length === 0 ? (
+        {filteredStock.length === 0 ? (
           <div className="text-center py-12">
             <Warehouse className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-600">No stock found</p>
             <p className="text-sm text-gray-500 mt-1">
-              {selectedLocationId
-                ? 'No stock found at this location. Try another filter or receive new stock.'
-                : 'No stock recorded yet. Receive new stock to get started.'}
+              {stockOnHand.length === 0
+                ? 'No stock recorded yet. Receive new stock to get started.'
+                : 'No items match your current filters. Try adjusting your search or filters.'}
             </p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Product
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    SKU
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Lot #
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Expiry Date
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Quantity
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {stockOnHand.map((item) => (
-                  <tr key={item.stock_on_hand_id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">
-                        {item.product_name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.sku}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.location_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.lot_number || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {item.expiry_date ? new Date(item.expiry_date).toLocaleDateString() : '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium text-gray-900">
-                      {item.quantity}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredStock.map((item) => (
+              <StockCard
+                key={item.stock_on_hand_id}
+                item={item}
+                onQuickAction={handleQuickAction}
+              />
+            ))}
           </div>
         )}
       </div>
 
-      {/* Modals */}
       <ReceiveStockModal
         isOpen={showReceiveModal}
         onClose={() => setShowReceiveModal(false)}
