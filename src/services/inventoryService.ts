@@ -23,14 +23,11 @@ export class InventoryService {
           sku,
           name,
           description,
-          unit_price,
-          supplier_id,
           category_id,
           metadata,
           created_at,
           updated_at,
           user_id,
-          inv_suppliers(name),
           inv_categories(name)
         `)
         .order('name')
@@ -49,9 +46,6 @@ export class InventoryService {
         sku: item.sku,
         name: item.name,
         description: item.description,
-        unit_price: item.unit_price,
-        supplier_id: item.supplier_id,
-        supplier_name: item.inv_suppliers?.name,
         category_id: item.category_id,
         category_name: item.inv_categories?.name,
         metadata: item.metadata,
@@ -100,9 +94,6 @@ export class InventoryService {
         sku: data[0].sku,
         name: data[0].name,
         description: data[0].description,
-        unit_price: data[0].unit_price,
-        supplier_id: data[0].supplier_id,
-        supplier_name: data[0].supplier_name,
         category_id: data[0].category_id,
         category_name: data[0].category_name,
         metadata: data[0].metadata,
@@ -132,8 +123,6 @@ export class InventoryService {
         p_name: productData.name,
         p_sku: productData.sku,
         p_description: productData.description || null,
-        p_unit_price: productData.unit_price,
-        p_supplier_id: productData.supplier_id,
         p_category_id: productData.category_id,
         p_metadata: productData.metadata || null
       })
@@ -167,8 +156,6 @@ export class InventoryService {
         p_name: productData.name,
         p_sku: productData.sku,
         p_description: productData.description || null,
-        p_unit_price: productData.unit_price,
-        p_supplier_id: productData.supplier_id,
         p_category_id: productData.category_id,
         p_metadata: productData.metadata || null
       })
@@ -755,7 +742,10 @@ export class InventoryService {
         p_lot_number: formData.lot_number,
         p_expiry_date: formData.expiry_date,
         p_notes: formData.notes,
-        p_reference_id: formData.reference_id
+        p_reference_id: formData.reference_id,
+        p_purchase_price: formData.purchase_price,
+        p_selling_price: formData.selling_price,
+        p_supplier_id: formData.supplier_id
       })
 
       if (error) {

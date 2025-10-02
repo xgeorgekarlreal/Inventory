@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Product, Category, Supplier, ProductFormData } from '../../types/inventory'
+import { Product, Category, ProductFormData } from '../../types/inventory'
 import { InventoryService } from '../../services/inventoryService'
-import { Package, DollarSign, FileText, Tag, Truck, AlertCircle } from 'lucide-react'
+import { Package, FileText, Tag, AlertCircle } from 'lucide-react'
 
 interface ProductFormProps {
   initialData?: Product | null
@@ -22,14 +22,11 @@ const ProductForm: React.FC<ProductFormProps> = ({
     name: '',
     sku: '',
     description: '',
-    unit_price: 0,
-    supplier_id: null,
     category_id: null,
     metadata: null
   })
 
   const [categories, setCategories] = useState<Category[]>([])
-  const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loadingData, setLoadingData] = useState(true)
   const [error, setError] = useState('')
 
@@ -43,8 +40,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
         name: initialData.name || '',
         sku: initialData.sku || '',
         description: initialData.description || '',
-        unit_price: initialData.unit_price || 0,
-        supplier_id: initialData.supplier_id || null,
         category_id: initialData.category_id || null,
         metadata: initialData.metadata || null
       })
@@ -56,21 +51,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
     setError('')
 
     try {
-      const [categoriesResult, suppliersResult] = await Promise.all([
-        InventoryService.getAllCategories(),
-        InventoryService.getAllSuppliers()
-      ])
+      const categoriesResult = await InventoryService.getAllCategories()
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.data || [])
       } else {
         setError(categoriesResult.message)
-      }
-
-      if (suppliersResult.success) {
-        setSuppliers(suppliersResult.data || [])
-      } else {
-        setError(suppliersResult.message)
       }
     } catch (err) {
       setError('Failed to load form data')
@@ -83,7 +69,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
     e.preventDefault()
     setError('')
 
-    // Basic validation
     if (!formData.name.trim()) {
       setError('Product name is required')
       return
@@ -91,11 +76,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
     if (!formData.sku.trim()) {
       setError('SKU is required')
-      return
-    }
-
-    if (formData.unit_price <= 0) {
-      setError('Unit price must be greater than 0')
       return
     }
 
@@ -130,6 +110,9 @@ const ProductForm: React.FC<ProductFormProps> = ({
         <h3 className="text-lg font-medium text-gray-900">
           {initialData ? 'Edit Product' : 'Create New Product'}
         </h3>
+        <p className="mt-1 text-sm text-gray-600">
+          Pricing and supplier information is tracked when receiving stock.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 space-y-6">
@@ -181,30 +164,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
             </div>
           </div>
 
-          {/* Unit Price */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Unit Price *
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <DollarSign className="h-5 w-5 text-gray-400" />
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                required
-                value={formData.unit_price}
-                onChange={(e) => handleInputChange('unit_price', parseFloat(e.target.value) || 0)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00"
-              />
-            </div>
-          </div>
-
           {/* Category */}
-          <div>
+          <div className="sm:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Category
             </label>
@@ -217,25 +178,6 @@ const ProductForm: React.FC<ProductFormProps> = ({
               {categories.map((category) => (
                 <option key={category.category_id} value={category.category_id}>
                   {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Supplier */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Supplier
-            </label>
-            <select
-              value={formData.supplier_id || ''}
-              onChange={(e) => handleInputChange('supplier_id', e.target.value ? parseInt(e.target.value) : null)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Select a supplier</option>
-              {suppliers.map((supplier) => (
-                <option key={supplier.supplier_id} value={supplier.supplier_id}>
-                  {supplier.name}
                 </option>
               ))}
             </select>
