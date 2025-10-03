@@ -1,6 +1,6 @@
 import React from 'react'
 import { StockOnHandItem } from '../../types/inventory'
-import { Package, MapPin, Calendar, AlertCircle, Clock, TrendingDown } from 'lucide-react'
+import { Package, MapPin, Calendar, AlertCircle, Clock, TrendingDown, DollarSign, Truck } from 'lucide-react'
 
 interface StockCardProps {
   item: StockOnHandItem
@@ -94,6 +94,25 @@ const StockCard: React.FC<StockCardProps> = ({ item, onQuickAction }) => {
               </span>
             </div>
           )}
+
+          {item.supplier_name && (
+            <div className="flex items-center text-sm text-gray-600">
+              <Truck className="h-4 w-4 mr-2 flex-shrink-0 text-gray-400" />
+              <span className="truncate">{item.supplier_name}</span>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between text-sm pt-2 border-t border-gray-100">
+            <div className="flex items-center text-gray-600">
+              <DollarSign className="h-4 w-4 mr-1 flex-shrink-0 text-gray-400" />
+              <span className="text-xs text-gray-500 mr-1">Cost:</span>
+              <span className="font-medium">${item.purchase_price?.toFixed(2) || '0.00'}</span>
+            </div>
+            <div className="flex items-center text-gray-600">
+              <span className="text-xs text-gray-500 mr-1">Sell:</span>
+              <span className="font-medium">${item.selling_price?.toFixed(2) || '0.00'}</span>
+            </div>
+          </div>
         </div>
 
         {expiryStatus && (expiryStatus.status === 'expired' || expiryStatus.status === 'expiring-soon') && (

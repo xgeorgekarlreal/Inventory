@@ -223,7 +223,7 @@ const InventoryValuationReportPage: React.FC = () => {
                     Location
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Unit Price
+                    Purchase Price
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Quantity
@@ -249,7 +249,7 @@ const InventoryValuationReportPage: React.FC = () => {
                       {item.location_name || '-'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                      ${item.unit_price.toFixed(2)}
+                      ${item.purchase_price.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
                       {item.current_quantity}

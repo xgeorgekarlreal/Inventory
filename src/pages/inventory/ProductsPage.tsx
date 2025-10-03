@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { InventoryService } from '../../services/inventoryService'
-import { Product, Category, Supplier, ProductFilters } from '../../types/inventory'
+import { Product, Category, ProductFilters } from '../../types/inventory'
 import { 
   Plus, 
   Search, 
@@ -21,7 +21,6 @@ const ProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
   const [categories, setCategories] = useState<Category[]>([])
-  const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -29,8 +28,7 @@ const ProductsPage: React.FC = () => {
   // Filter state
   const [filters, setFilters] = useState<ProductFilters>({
     search: '',
-    category_id: null,
-    supplier_id: null
+    category_id: null
   })
 
   // Delete modal state
@@ -51,10 +49,9 @@ const ProductsPage: React.FC = () => {
     setError('')
 
     try {
-      const [productsResult, categoriesResult, suppliersResult] = await Promise.all([
+      const [productsResult, categoriesResult] = await Promise.all([
         InventoryService.getAllProducts(),
-        InventoryService.getAllCategories(),
-        InventoryService.getAllSuppliers()
+        InventoryService.getAllCategories()
       ])
 
       if (productsResult.success) {
@@ -65,10 +62,6 @@ const ProductsPage: React.FC = () => {
 
       if (categoriesResult.success) {
         setCategories(categoriesResult.data || [])
-      }
-
-      if (suppliersResult.success) {
-        setSuppliers(suppliersResult.data || [])
       }
     } catch (err) {
       setError('Failed to load data')
@@ -95,11 +88,6 @@ const ProductsPage: React.FC = () => {
       filtered = filtered.filter(product => product.category_id === filters.category_id)
     }
 
-    // Supplier filter
-    if (filters.supplier_id) {
-      filtered = filtered.filter(product => product.supplier_id === filters.supplier_id)
-    }
-
     setFilteredProducts(filtered)
   }
 
@@ -113,8 +101,7 @@ const ProductsPage: React.FC = () => {
   const clearFilters = () => {
     setFilters({
       search: '',
-      category_id: null,
-      supplier_id: null
+      category_id: null
     })
   }
 
@@ -215,7 +202,7 @@ const ProductsPage: React.FC = () => {
           <h3 className="text-lg font-medium text-gray-900">Filters</h3>
         </div>
         
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {/* Search */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -249,25 +236,6 @@ const ProductsPage: React.FC = () => {
               {categories.map((category) => (
                 <option key={category.category_id} value={category.category_id}>
                   {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Supplier Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Supplier
-            </label>
-            <select
-              value={filters.supplier_id || ''}
-              onChange={(e) => handleFilterChange('supplier_id', e.target.value ? parseInt(e.target.value) : null)}
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">All suppliers</option>
-              {suppliers.map((supplier) => (
-                <option key={supplier.supplier_id} value={supplier.supplier_id}>
-                  {supplier.name}
                 </option>
               ))}
             </select>
@@ -318,12 +286,6 @@ const ProductsPage: React.FC = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Category
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Supplier
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
-                  </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
@@ -349,12 +311,6 @@ const ProductsPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {product.category_name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {product.supplier_name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      ${product.unit_price.toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">

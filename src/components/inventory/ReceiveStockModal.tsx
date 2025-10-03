@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Product, Location, ReceiveStockFormData } from '../../types/inventory'
+import { Product, Location, Supplier, ReceiveStockFormData } from '../../types/inventory'
 import { InventoryService } from '../../services/inventoryService'
-import { Package, MapPin, Plus, Calendar, FileText, AlertCircle } from 'lucide-react'
+import { Package, MapPin, Plus, Calendar, FileText, AlertCircle, DollarSign, Truck } from 'lucide-react'
 
 interface ReceiveStockModalProps {
   isOpen: boolean
@@ -28,13 +28,21 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
     expiry_date: null,
     notes: null,
     reference_id: null,
+    purchase_price: 0,
+    selling_price: 0,
+    supplier_id: null,
   })
+  const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(false)
+  const [loadingSuppliers, setLoadingSuppliers] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    loadSuppliers()
+  }, [])
+
+  useEffect(() => {
     if (isOpen) {
-      // Reset form when modal opens
       setFormData({
         product_id: null,
         location_id: preSelectedLocationId || null,
@@ -43,10 +51,27 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
         expiry_date: null,
         notes: null,
         reference_id: null,
+        purchase_price: 0,
+        selling_price: 0,
+        supplier_id: null,
       })
       setError('')
     }
   }, [isOpen, preSelectedLocationId])
+
+  const loadSuppliers = async () => {
+    setLoadingSuppliers(true)
+    try {
+      const result = await InventoryService.getAllSuppliers()
+      if (result.success) {
+        setSuppliers(result.data || [])
+      }
+    } catch (err) {
+      console.error('Failed to load suppliers:', err)
+    } finally {
+      setLoadingSuppliers(false)
+    }
+  }
 
   const handleInputChange = (field: keyof ReceiveStockFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -68,7 +93,14 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
       setError('Quantity must be greater than 0.')
       return
     }
-    console.log(formData);
+    if (formData.purchase_price < 0) {
+      setError('Purchase price cannot be negative.')
+      return
+    }
+    if (formData.selling_price < 0) {
+      setError('Selling price cannot be negative.')
+      return
+    }
 
     setLoading(true)
     try {
@@ -97,7 +129,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
           onClick={onClose}
         ></div>
 
-        <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
+        <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg">
           <div className="flex items-center space-x-3 mb-4">
             <Plus className="h-6 w-6 text-blue-600" />
             <h3 className="text-lg font-medium text-gray-900">Receive Stock</h3>
@@ -111,65 +143,133 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
               </div>
             )}
 
-            {/* Product */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product *
-              </label>
-              <select
-                required
-                value={formData.product_id || ''}
-                onChange={(e) =>
-                  handleInputChange('product_id', e.target.value ? parseInt(e.target.value) : null)
-                }
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Select product</option>
-                {products.map((product) => (
-                  <option key={product.product_id} value={product.product_id}>
-                    {product.name} ({product.sku})
-                  </option>
-                ))}
-              </select>
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Product */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Product *
+                </label>
+                <select
+                  required
+                  value={formData.product_id || ''}
+                  onChange={(e) =>
+                    handleInputChange('product_id', e.target.value ? parseInt(e.target.value) : null)
+                  }
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Select product</option>
+                  {products.map((product) => (
+                    <option key={product.product_id} value={product.product_id}>
+                      {product.name} ({product.sku})
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Location */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Location *
-              </label>
-              <select
-                required
-                value={formData.location_id || ''}
-                onChange={(e) =>
-                  handleInputChange('location_id', e.target.value ? parseInt(e.target.value) : null)
-                }
-                disabled={!!preSelectedLocationId}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">Select location</option>
-                {locations.map((location) => (
-                  <option key={location.location_id} value={location.location_id}>
-                    {location.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+              {/* Location */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Location *
+                </label>
+                <select
+                  required
+                  value={formData.location_id || ''}
+                  onChange={(e) =>
+                    handleInputChange('location_id', e.target.value ? parseInt(e.target.value) : null)
+                  }
+                  disabled={!!preSelectedLocationId}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                >
+                  <option value="">Select location</option>
+                  {locations.map((location) => (
+                    <option key={location.location_id} value={location.location_id}>
+                      {location.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-            {/* Quantity */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Quantity *
-              </label>
-              <input
-                type="number"
-                required
-                min="1"
-                value={formData.quantity}
-                onChange={(e) => handleInputChange('quantity', parseInt(e.target.value))}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Quantity"
-              />
+              {/* Quantity */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Quantity *
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="1"
+                  value={formData.quantity}
+                  onChange={(e) => handleInputChange('quantity', parseInt(e.target.value))}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Quantity"
+                />
+              </div>
+
+              {/* Supplier */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Supplier
+                </label>
+                <select
+                  value={formData.supplier_id || ''}
+                  onChange={(e) =>
+                    handleInputChange('supplier_id', e.target.value ? parseInt(e.target.value) : null)
+                  }
+                  disabled={loadingSuppliers}
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                >
+                  <option value="">Select supplier</option>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.supplier_id} value={supplier.supplier_id}>
+                      {supplier.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Purchase Price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Purchase Price
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <DollarSign className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.purchase_price}
+                    onChange={(e) => handleInputChange('purchase_price', parseFloat(e.target.value) || 0)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="0.00"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Cost per unit</p>
+              </div>
+
+              {/* Selling Price */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Selling Price
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <DollarSign className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.selling_price}
+                    onChange={(e) => handleInputChange('selling_price', parseFloat(e.target.value) || 0)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="0.00"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">Price per unit to sell</p>
+              </div>
             </div>
 
             {/* Expiry Date */}
@@ -198,7 +298,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
                 value={formData.reference_id || ''}
                 onChange={(e) => handleInputChange('reference_id', e.target.value || null)}
                 className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Optional reference ID"
+                placeholder="Optional reference ID (e.g., PO number)"
               />
             </div>
 
