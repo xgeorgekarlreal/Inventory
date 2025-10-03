@@ -3,17 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { InventoryService } from '../../services/inventoryService'
 import { Product, Category, ProductFilters } from '../../types/inventory'
-import { 
-  Plus, 
-  Search, 
-  Edit, 
-  Trash2, 
-  Eye, 
-  AlertCircle, 
-  CheckCircle,
-  Package,
-  Filter
-} from 'lucide-react'
+import { Plus, Search, CreditCard as Edit, Trash2, Eye, AlertCircle, CheckCircle, Package, Filter } from 'lucide-react'
 
 const ProductsPage: React.FC = () => {
   const { persona } = useAuth()
