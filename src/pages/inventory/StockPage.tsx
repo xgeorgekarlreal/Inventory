@@ -126,6 +126,11 @@ const StockPage: React.FC = () => {
     }
   }
 
+  const handleCloseModal = (setModalOpen: (value: boolean) => void) => {
+    setModalOpen(false)
+    setSelectedItemForAction(null)
+  }
+
   const getExpiryStatus = (expiryDate: string | null) => {
     if (!expiryDate) return 'no-expiry'
 
@@ -446,39 +451,45 @@ const StockPage: React.FC = () => {
       />
       <AdjustStockModal
         isOpen={showAdjustModal}
-        onClose={() => setShowAdjustModal(false)}
+        onClose={() => handleCloseModal(setShowAdjustModal)}
         onSuccess={() => {
           setSuccess('Stock adjusted successfully!')
           loadData()
+          setSelectedItemForAction(null)
         }}
         products={products}
         locations={locations}
         stockItems={stockOnHand}
         preSelectedLocationId={selectedLocationId}
+        preSelectedItem={selectedItemForAction}
       />
       <TransferStockModal
         isOpen={showTransferModal}
-        onClose={() => setShowTransferModal(false)}
+        onClose={() => handleCloseModal(setShowTransferModal)}
         onSuccess={() => {
           setSuccess('Stock transferred successfully!')
           loadData()
+          setSelectedItemForAction(null)
         }}
         products={products}
         locations={locations}
         stockItems={stockOnHand}
         preSelectedLocationId={selectedLocationId}
+        preSelectedItem={selectedItemForAction}
       />
       <RecordSaleModal
         isOpen={showSaleModal}
-        onClose={() => setShowSaleModal(false)}
+        onClose={() => handleCloseModal(setShowSaleModal)}
         onSuccess={() => {
           setSuccess('Sale recorded successfully!')
           loadData()
+          setSelectedItemForAction(null)
         }}
         products={products}
         locations={locations}
         stockItems={stockOnHand}
         preSelectedLocationId={selectedLocationId}
+        preSelectedItem={selectedItemForAction}
       />
     </div>
   )
