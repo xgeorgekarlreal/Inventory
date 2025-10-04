@@ -65,20 +65,19 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
   }, [isOpen, preSelectedLocationId, preSelectedItem, stockItems])
 
   useEffect(() => {
-    if (formData.product_id && formData.source_location_id) {
+    if (formData.product_id && formData.source_location_id && !preSelectedItem) {
       const batches = stockItems.filter(
         (item) =>
           item.product_id === formData.product_id &&
           item.location_id === formData.source_location_id &&
-          item.quantity > 0 // Only show batches with stock
+          item.quantity > 0
       )
       setAvailableBatches(batches)
-    } else {
+      setFormData((prev) => ({ ...prev, batch_id: null }))
+    } else if (!preSelectedItem) {
       setAvailableBatches([])
     }
-    // Reset batch_id if product or source location changes
-    setFormData((prev) => ({ ...prev, batch_id: null }))
-  }, [formData.product_id, formData.source_location_id, stockItems])
+  }, [formData.product_id, formData.source_location_id, stockItems, preSelectedItem])
 
   const handleInputChange = (field: keyof TransferStockFormData, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
