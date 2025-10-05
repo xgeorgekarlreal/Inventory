@@ -181,7 +181,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <h1 className="text-xl font-bold text-gray-900">Inventory Pro</h1>
               {persona && (
                 <p className="text-xs text-gray-500 capitalize">
-                  {persona.type} Portal
+                  {persona.type === 'admin' ? 'Admin' : (persona.personName || persona.loginName || 'Staff')} Portal
                 </p>
               )}
             </div>
