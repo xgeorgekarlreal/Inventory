@@ -1,20 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { PersonaService } from '../services/personaService'
-import { 
-  Users, 
-  Shield, 
-  Plus, 
-  Trash2, 
-  Edit, 
-  Eye, 
-  EyeOff, 
-  AlertCircle, 
-  CheckCircle,
-  Key,
-  UserPlus,
-  Settings
-} from 'lucide-react'
+import { Users, Shield, Plus, Trash2, CreditCard as Edit, Eye, EyeOff, AlertCircle, CheckCircle, Key, UserPlus, Settings } from 'lucide-react'
 
 interface StaffAccount {
   name: string
@@ -31,6 +18,7 @@ const PersonaManagement: React.FC = () => {
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [newStaffName, setNewStaffName] = useState('')
   const [newStaffPassword, setNewStaffPassword] = useState('')
+  const [newPersonName, setNewPersonName] = useState('')
   const [showNewStaffPassword, setShowNewStaffPassword] = useState(false)
   const [createLoading, setCreateLoading] = useState(false)
 
@@ -98,11 +86,12 @@ const PersonaManagement: React.FC = () => {
     setSuccess('')
 
     try {
-      const result = await PersonaService.createStaffAccount(newStaffName, newStaffPassword)
+      const result = await PersonaService.createStaffAccount(newStaffName, newStaffPassword, newPersonName)
       if (result.success) {
         setSuccess('Staff account created successfully')
         setNewStaffName('')
         setNewStaffPassword('')
+        setNewPersonName('')
         setShowCreateModal(false)
         await loadStaffAccounts()
       } else {
@@ -327,7 +316,7 @@ const PersonaManagement: React.FC = () => {
               <form onSubmit={handleCreateStaff} className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Staff Name
+                    Login Name
                   </label>
                   <input
                     type="text"
@@ -335,10 +324,24 @@ const PersonaManagement: React.FC = () => {
                     value={newStaffName}
                     onChange={(e) => setNewStaffName(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Enter staff name"
+                    placeholder="Enter login name"
                   />
                 </div>
-                
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Person Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={newPersonName}
+                    onChange={(e) => setNewPersonName(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Enter person name"
+                  />
+                </div>
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Password
