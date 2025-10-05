@@ -5,6 +5,7 @@ import { Package, MapPin, ArrowRightLeft, Tag, FileText, AlertCircle } from 'luc
 
 interface TransferStockModalProps {
   isOpen: boolean
+  p_persona_name: string
   onClose: () => void
   onSuccess: () => void
   products: Product[]
@@ -16,6 +17,7 @@ interface TransferStockModalProps {
 
 const TransferStockModal: React.FC<TransferStockModalProps> = ({
   isOpen,
+  p_persona_name,
   onClose,
   onSuccess,
   products,
@@ -32,6 +34,7 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
     batch_id: null,
     notes: null,
     reference_id: null,
+    persona_name: p_persona_name
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -48,6 +51,8 @@ const TransferStockModal: React.FC<TransferStockModalProps> = ({
         batch_id: preSelectedItem?.batch_id || null,
         notes: null,
         reference_id: null,
+        persona_name: p_persona_name
+
       })
       setError('')
       if (preSelectedItem) {

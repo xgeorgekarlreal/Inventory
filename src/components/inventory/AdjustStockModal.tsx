@@ -5,6 +5,7 @@ import { Package, MapPin, Plus, Minus, Tag, FileText, AlertCircle } from 'lucide
 
 interface AdjustStockModalProps {
   isOpen: boolean
+  p_persona_name: string
   onClose: () => void
   onSuccess: () => void
   products: Product[]
@@ -16,6 +17,7 @@ interface AdjustStockModalProps {
 
 const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
   isOpen,
+  p_persona_name,
   onClose,
   onSuccess,
   products,
@@ -31,6 +33,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
     batch_id: null,
     notes: null,
     reference_id: null,
+    persona_name: p_persona_name
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -46,6 +49,7 @@ const AdjustStockModal: React.FC<AdjustStockModalProps> = ({
         batch_id: preSelectedItem?.batch_id || null,
         notes: null,
         reference_id: null,
+        persona_name: p_persona_name
       })
       setError('')
       if (preSelectedItem) {

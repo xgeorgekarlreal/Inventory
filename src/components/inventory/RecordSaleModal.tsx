@@ -4,7 +4,8 @@ import { InventoryService } from '../../services/inventoryService'
 import { Package, MapPin, DollarSign, Tag, FileText, AlertCircle } from 'lucide-react'
 
 interface RecordSaleModalProps {
-  isOpen: boolean
+  isOpen: boolean  
+  p_persona_name: string
   onClose: () => void
   onSuccess: () => void
   products: Product[]
@@ -16,6 +17,7 @@ interface RecordSaleModalProps {
 
 const RecordSaleModal: React.FC<RecordSaleModalProps> = ({
   isOpen,
+  p_persona_name,
   onClose,
   onSuccess,
   products,
@@ -31,6 +33,7 @@ const RecordSaleModal: React.FC<RecordSaleModalProps> = ({
     batch_id: null,
     notes: null,
     reference_id: null,
+    persona_name: p_persona_name
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -46,6 +49,7 @@ const RecordSaleModal: React.FC<RecordSaleModalProps> = ({
         batch_id: preSelectedItem?.batch_id || null,
         notes: null,
         reference_id: null,
+        persona_name: p_persona_name
       })
       setError('')
       if (preSelectedItem) {

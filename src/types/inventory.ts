@@ -139,6 +139,8 @@ export interface ReceiveStockFormData {
   expiry_date: string | null
   notes: string | null
   reference_id: string | null
+  persona_name: string
+
 }
 
 export interface AdjustStockFormData {
@@ -148,6 +150,7 @@ export interface AdjustStockFormData {
   batch_id: number | null
   notes: string | null
   reference_id: string | null
+  persona_name: string
 }
 
 export interface TransferStockFormData {
@@ -158,6 +161,7 @@ export interface TransferStockFormData {
   batch_id: number | null
   notes: string | null
   reference_id: string | null
+  persona_name: string
 }
 
 export interface RecordSaleFormData {
@@ -167,6 +171,8 @@ export interface RecordSaleFormData {
   batch_id: number | null
   notes: string | null
   reference_id: string | null
+  persona_name: string
+
 }
 
 // Report interfaces

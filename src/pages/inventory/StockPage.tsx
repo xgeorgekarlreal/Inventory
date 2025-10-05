@@ -36,7 +36,7 @@ const StockPage: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
-
+  
   const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null)
   const [currentLocation, setCurrentLocation] = useState<Location | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -440,6 +440,7 @@ const StockPage: React.FC = () => {
 
       <ReceiveStockModal
         isOpen={showReceiveModal}
+        p_persona_name={persona.personName}
         onClose={() => setShowReceiveModal(false)}
         onSuccess={() => {
           setSuccess('Stock received successfully!')
@@ -451,6 +452,7 @@ const StockPage: React.FC = () => {
       />
       <AdjustStockModal
         isOpen={showAdjustModal}
+        p_persona_name={persona.personName}
         onClose={() => handleCloseModal(setShowAdjustModal)}
         onSuccess={() => {
           setSuccess('Stock adjusted successfully!')
@@ -465,6 +467,7 @@ const StockPage: React.FC = () => {
       />
       <TransferStockModal
         isOpen={showTransferModal}
+        p_persona_name={persona.personName}
         onClose={() => handleCloseModal(setShowTransferModal)}
         onSuccess={() => {
           setSuccess('Stock transferred successfully!')
@@ -479,6 +482,7 @@ const StockPage: React.FC = () => {
       />
       <RecordSaleModal
         isOpen={showSaleModal}
+        p_persona_name={persona.personName}
         onClose={() => handleCloseModal(setShowSaleModal)}
         onSuccess={() => {
           setSuccess('Sale recorded successfully!')

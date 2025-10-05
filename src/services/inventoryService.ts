@@ -745,7 +745,8 @@ export class InventoryService {
         p_reference_id: formData.reference_id,
         p_purchase_price: formData.purchase_price,
         p_selling_price: formData.selling_price,
-        p_supplier_id: formData.supplier_id
+        p_supplier_id: formData.supplier_id,
+        p_persona_name: formData.persona_name
       })
 
       if (error) {
@@ -778,7 +779,9 @@ export class InventoryService {
         p_quantity_change: formData.quantity_change,
         p_batch_id: formData.batch_id,
         p_notes: formData.notes,
-        p_reference_id: formData.reference_id
+        p_reference_id: formData.reference_id,
+        p_persona_name: formData.persona_name
+
       })
 
       if (error) {
@@ -812,7 +815,8 @@ export class InventoryService {
         p_quantity: formData.quantity,
         p_batch_id: formData.batch_id,
         p_notes: formData.notes,
-        p_reference_id: formData.reference_id
+        p_reference_id: formData.reference_id,
+        p_persona_name: formData.persona_name
       })
 
       if (error) {
@@ -845,7 +849,8 @@ export class InventoryService {
         p_quantity: formData.quantity,
         p_batch_id: formData.batch_id,
         p_notes: formData.notes,
-        p_reference_id: formData.reference_id
+        p_reference_id: formData.reference_id,
+        p_persona_name: formData.persona_name
       })
 
       if (error) {

@@ -5,6 +5,7 @@ import { Package, MapPin, Plus, Calendar, FileText, AlertCircle, DollarSign, Tru
 
 interface ReceiveStockModalProps {
   isOpen: boolean
+  p_persona_name: string
   onClose: () => void
   onSuccess: () => void
   products: Product[]
@@ -14,6 +15,7 @@ interface ReceiveStockModalProps {
 
 const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
   isOpen,
+  p_persona_name,
   onClose,
   onSuccess,
   products,
@@ -31,6 +33,7 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
     purchase_price: 0,
     selling_price: 0,
     supplier_id: null,
+    persona_name: p_persona_name
   })
   const [suppliers, setSuppliers] = useState<Supplier[]>([])
   const [loading, setLoading] = useState(false)
@@ -54,6 +57,8 @@ const ReceiveStockModal: React.FC<ReceiveStockModalProps> = ({
         purchase_price: 0,
         selling_price: 0,
         supplier_id: null,
+        persona_name: p_persona_name
+
       })
       setError('')
     }
