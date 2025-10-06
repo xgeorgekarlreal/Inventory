@@ -28,12 +28,15 @@ import TransactionsPage from './pages/inventory/TransactionsPage'
 import StockByLocationPage from './pages/inventory/StockByLocationPage'
 import ReportsPage from './pages/reports/ReportsPage'
 import InventoryValuationReportPage from './pages/reports/InventoryValuationReportPage'
-import { 
-  BarChart3, 
-  FileText, 
-  Mail, 
-  Calendar, 
-  Settings 
+import ExpirationReportPage from './pages/reports/ExpirationReportPage'
+import LowStockReportPage from './pages/reports/LowStockReportPage'
+import TransactionHistoryReportPage from './pages/reports/TransactionHistoryReportPage'
+import {
+  BarChart3,
+  FileText,
+  Mail,
+  Calendar,
+  Settings
 } from 'lucide-react'
 
 function App() {
@@ -272,7 +275,37 @@ function App() {
               </PersonaProtectedRoute>
             </ProtectedRoute>
           } />
-          
+
+          <Route path="/reports/expiration" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <ExpirationReportPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/reports/low-stock" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <LowStockReportPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+
+          <Route path="/reports/transaction-history" element={
+            <ProtectedRoute>
+              <PersonaProtectedRoute>
+                <Layout>
+                  <TransactionHistoryReportPage />
+                </Layout>
+              </PersonaProtectedRoute>
+            </ProtectedRoute>
+          } />
+
           {/* Settings and Admin Routes */}
           <Route path="/settings" element={
             <ProtectedRoute>
